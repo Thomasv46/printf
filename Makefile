@@ -8,15 +8,15 @@ OBONUS	=	${BONUS:.c=.o}
 
 CC		=	gcc
 
-FLAGS	=	-Wall -Wextra -Werror -lft
+FLAGS	=	-Wall -Wextra -Werror -L libft -lft -I libft
 
 NAME	=	libftprintf.a
 
 RM		= rm -f
 
-.c.o	: ${CC} ${FLAGS} -c -L libft $< -o ${<:.c=.o}
+.c.o	: ${CC} ${FLAGS} -c $< -o ${<:.c=.o}
 
-${NAME}	:	libft ${OBJS}
+${NAME}	:	${OBJS}
 			ar rc ${NAME} ${OBJS}
 			ranlib ${NAME}
 
