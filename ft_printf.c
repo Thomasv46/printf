@@ -6,79 +6,81 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/21 13:58:51 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/21 17:14:33 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "ft_printf.h"
 
-static int			char_in_str(char c, char *s)
+static void	set_data(const char **fmt, va_list ap, int *data)
 {
-	while (*s)
-		if (c == *s++)
-			return (1);
-	return (0);
-}
-
-static const char	*set_data(const char *fmt, va_list ap, int *data)
-{
-	if (ft_isdigit(*fmt))
-		*data = (ft_atoi(fmt));
-	else if (*fmt == '*')
+	if (ft_isdigit(**fmt))
+		*data = (ft_atoi(*fmt));
+	else if (**fmt == '*')
+	{
 		*data = (va_arg(ap, int));
-	fmt++;
-	while (ft_isdigit(*fmt))
-		fmt++;
-	return (fmt);
+		(*fmt)++;
+	}
+	while (ft_isdigit(**fmt))
+		(*fmt)++;
 }
 
-static void			ft_pad(int *width, char *s, char c, char *flags)
+static void	ft_pad(char conversion, int data[2], char *s, char *flags)
 {
-	int	size;
+	int		size;
+	char	c;
 
+	c = ' ';
 	size = ft_strlen(s);
-	if (char_in_str('-', flags))
-		while ((*width)-- > size)
+	if (!ft_strchr(flags, '-'))
+	{
+		if (ft_strchr(flags, '0') && ft_strchr("diuxXefg", conversion)
+			&& (!ft_strchr("diuxX", conversion) || !data[1]))
+			c = '0';
+		while (data[0]-- > size)
 			ft_putchar_fd(c, 1);
+	}
 	ft_putstr_fd(s, 1);
-	while ((*width)-- > size)
-		ft_putchar_fd(c, 1);
+	if (ft_strchr(flags, '-'))
+		while (data[0]-- > size)
+			ft_putchar_fd(c, 1);
 }
 
-static void			apply_conversion(char conversion, va_list ap, int data[2], char *flags)
+static void	put_format(char conversion, va_list ap, int data[2], char *flags)
 {
 	char	*s;
 
 	if (conversion == 'c')
 	{
 		s = ft_calloc(1, 2);
-		*s = va_arg(ap, int);
-		ft_pad(&data[0], s, ' ', flags);
-		free(s);
+		s[0] = va_arg(ap, int);
 	}
 	else if (conversion == 's')
-		ft_pad(&data[0], va_arg(ap, char *), ' ', flags);
-	else if (conversion == 'd' || conversion == 'i')
-		ft_putnbr_fd(va_arg(ap, int), 1);
+		s = ft_strdup(va_arg(ap, char *));
+	else if (ft_strchr("di", conversion))
+		s = ft_itoa(va_arg(ap, int));
 	else if (conversion == 'u')
-		ft_putnbr_base(va_arg(ap, unsigned int), "0123456789", 1);
-	else if (conversion == 'x' || conversion == 'X')
+		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789");
+	else if (ft_strchr("xX", conversion))
 	{
-		if (char_in_str('#', flags))
+		if (ft_strchr(flags, '#'))
 		{
 			ft_putchar_fd('0', 1);
 			ft_putchar_fd(conversion, 1);
 		}
 		if (conversion == 'x')
-			ft_putnbr_base(va_arg(ap, unsigned int), "0123456789abcdef", 1);
+			s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789abcdef");
 		else
-			ft_putnbr_base(va_arg(ap, unsigned int), "0123456789ABCDEF", 1);
+			s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789ABCDEF");
 	}
 	if (conversion == 'p')
 		return ;
+	ft_pad(conversion, data, s, flags);
+	free(s);
 }
 
-int					ft_printf(const char *fmt, ...)
+int			ft_printf(const char *fmt, ...)
 {
 	va_list ap;
 	int		data[3];
@@ -86,20 +88,27 @@ int					ft_printf(const char *fmt, ...)
 
 	va_start(ap, fmt);
 	while (*fmt)
+	{
 		if (*fmt++ == '%')
 		{
 			ft_bzero(&flags[0], 6);
 			ft_bzero(&data[0], sizeof(int) * 3);
-			while (char_in_str(*fmt, "-0# +"))
-				if (!char_in_str(*fmt++, flags))
+			while (ft_strchr("-0# +", *fmt))
+				if (!ft_strchr(flags, *fmt++))
 					flags[data[2]] = *(fmt - 1);
-			fmt = set_data(fmt, ap, &data[0]);
+			set_data(&fmt, ap, &data[0]);
 			if (*fmt == '.')
-				fmt = set_data(fmt, ap, &data[1]);
-			apply_conversion(*fmt++, ap, data, &flags[0]);
+				set_data(&fmt, ap, &data[1]);
+			put_format(*fmt++, ap, data, &flags[0]);
 		}
 		else
 			ft_putchar_fd(*(fmt - 1), 1);
+	}
 	va_end(ap);
 	return (0);
+}
+
+int			main(void)
+{
+	ft_printf("%-15s-%10c\n%010X\n", "bonjour", 't', 5499);
 }
