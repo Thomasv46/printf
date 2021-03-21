@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/21 22:24:20 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/21 22:40:47 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
+	if (**fmt == '.')
+		(*fmt)++;
 	if (ft_isdigit(**fmt))
 		*data = (ft_atoi(*fmt));
 	else if (**fmt == '*')
@@ -103,7 +105,7 @@ int			ft_printf(const char *fmt, ...)
 int			main(void)
 {
 	char	*str = malloc(1);
-	ft_printf("%-15s-%10c\n%010X\n%p", "bonjour", 't', 5499, str);
+	ft_printf("%-15s-%10c\n%.10d\n%p", "bonjour", 't', 5499, str);
 	write(1, "\n", 1);
-	printf("%-15s-%10c\n%010X\n%p", "bonjour", 't', 5499, str);
+	printf("%-15s-%10c\n%.10d\n%p", "bonjour", 't', 5499, str);
 }
