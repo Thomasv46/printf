@@ -6,11 +6,10 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/21 17:14:33 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/21 18:43:58 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "ft_printf.h"
 
 static void	set_data(const char **fmt, va_list ap, int *data)
@@ -61,21 +60,13 @@ static void	put_format(char conversion, va_list ap, int data[2], char *flags)
 	else if (ft_strchr("di", conversion))
 		s = ft_itoa(va_arg(ap, int));
 	else if (conversion == 'u')
-		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789");
-	else if (ft_strchr("xX", conversion))
-	{
-		if (ft_strchr(flags, '#'))
-		{
-			ft_putchar_fd('0', 1);
-			ft_putchar_fd(conversion, 1);
-		}
-		if (conversion == 'x')
-			s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789abcdef");
-		else
-			s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789ABCDEF");
-	}
+		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789", conversion, flags);
+	else if (conversion == 'x')
+		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789abcdef", conversion, flags);
+	else if (conversion == 'X')
+		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789ABCDEF", conversion, flags);
 	if (conversion == 'p')
-		return ;
+		s = ft_putnbr_base(va_arg(ap, unsigned long), "0123456789abcdef", conversion, flags);
 	ft_pad(conversion, data, s, flags);
 	free(s);
 }
@@ -110,5 +101,8 @@ int			ft_printf(const char *fmt, ...)
 
 int			main(void)
 {
-	ft_printf("%-15s-%10c\n%010X\n", "bonjour", 't', 5499);
+	char	*str = malloc(1);
+	ft_printf("%-15s-%10c\n%010X\n%p", "bonjour", 't', 5499, str);
+	write(1, "\n", 1);
+	printf("%-15s-%10c\n%010X\n%p", "bonjour", 't', 5499, str);
 }
