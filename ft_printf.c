@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/21 18:43:58 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/21 22:24:20 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,19 @@ static void	set_data(const char **fmt, va_list ap, int *data)
 		(*fmt)++;
 }
 
-static void	ft_pad(char conversion, int data[2], char *s, char *flags)
+static void	ft_pad(char conversion, int data[3], char *s, char *flags)
 {
 	int		size;
 	char	c;
 
 	c = ' ';
 	size = ft_strlen(s);
-	if (!ft_strchr(flags, '-'))
+	if (data[0] < 0 && !ft_strchr(flags, '-'))
+	{
+		data[0] = -data[0];
+		flags[data[2]] = '-';
+	}
+	if (!ft_strchr(flags, '-') && data[0] >= 0)
 	{
 		if (ft_strchr(flags, '0') && ft_strchr("diuxXefg", conversion)
 			&& (!ft_strchr("diuxX", conversion) || !data[1]))
@@ -41,7 +46,7 @@ static void	ft_pad(char conversion, int data[2], char *s, char *flags)
 			ft_putchar_fd(c, 1);
 	}
 	ft_putstr_fd(s, 1);
-	if (ft_strchr(flags, '-'))
+	if (ft_strchr(flags, '-') || data[0] < 0)
 		while (data[0]-- > size)
 			ft_putchar_fd(c, 1);
 }
@@ -53,20 +58,16 @@ static void	put_format(char conversion, va_list ap, int data[2], char *flags)
 	if (conversion == 'c')
 	{
 		s = ft_calloc(1, 2);
-		s[0] = va_arg(ap, int);
+		s[0] = (unsigned char)va_arg(ap, int);
 	}
 	else if (conversion == 's')
 		s = ft_strdup(va_arg(ap, char *));
 	else if (ft_strchr("di", conversion))
 		s = ft_itoa(va_arg(ap, int));
-	else if (conversion == 'u')
-		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789", conversion, flags);
-	else if (conversion == 'x')
-		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789abcdef", conversion, flags);
-	else if (conversion == 'X')
-		s = ft_putnbr_base(va_arg(ap, unsigned int), "0123456789ABCDEF", conversion, flags);
+	else if (ft_strchr("uxX", conversion))
+		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, flags);
 	if (conversion == 'p')
-		s = ft_putnbr_base(va_arg(ap, unsigned long), "0123456789abcdef", conversion, flags);
+		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, flags);
 	ft_pad(conversion, data, s, flags);
 	free(s);
 }
