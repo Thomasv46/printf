@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 20:56:23 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 21:46:13 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 	if (!ft_strchr(flags, '-') && data[0] >= 0)
 	{
 		if (ft_strchr(flags, '0') && ft_strchr("sdiuxXefg", conversion)
-			&& (!ft_strchr("uxX", conversion) || !data[1]))
+			&& (!ft_strchr("diuxX", conversion) || data[1] == -1))
 			c = '0';
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
@@ -85,7 +85,7 @@ static void	put_format(char conversion, va_list ap, int data[4], char *flags)
 	else if (conversion == 's')
 		s = ft_format_str(va_arg(ap, char *), data[1]);
 	else if (ft_strchr("di", conversion))
-		s = ft_itoa(va_arg(ap, int));
+		s = ft_putnbr_signed(va_arg(ap, int), data, flags);
 	else if (ft_strchr("uxX", conversion))
 		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, data, flags);
 	if (conversion == 'p')

@@ -1,4 +1,4 @@
-SRCS		=	ft_printf.c ft_putnbr_base.c ft_format_str.c
+SRCS		=	ft_printf.c ft_putnbr_base.c ft_format_str.c ft_putnbr_signed.c
 
 LIBFTSRCS	=
 
