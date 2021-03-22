@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 14:53:03 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 16:21:26 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,23 @@ static void	output_char(char c, int *count)
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
-	if (**fmt == '.')
-		(*fmt)++;
+
 	if (ft_isdigit(**fmt))
 		*data = (ft_atoi(*fmt));
 	else if (**fmt == '*')
 	{
 		*data = (va_arg(ap, int));
+		(*fmt)++;
+	}
+	while (ft_isdigit(**fmt))
+		(*fmt)++;
+	if (**fmt == '.')
+		(*fmt)++;
+	if (ft_isdigit(**fmt))
+		*(data + 1) = (ft_atoi(*fmt));
+	else if (**fmt == '*')
+	{
+		*(data + 1) = (va_arg(ap, int));
 		(*fmt)++;
 	}
 	while (ft_isdigit(**fmt))
@@ -47,14 +57,14 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 	}
 	if (!ft_strchr(flags, '-') && data[0] >= 0)
 	{
-		if (ft_strchr(flags, '0') && ft_strchr("diuxXefg", conversion)
+		if (ft_strchr(flags, '0') && ft_strchr("sdiuxXefg", conversion)
 			&& (!ft_strchr("diuxX", conversion) || !data[1]))
 			c = '0';
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
 	}
 	ft_putstr_fd(s, 1);
-	data[3] += ft_strlen(s);
+	data[3] += size;
 	if (ft_strchr(flags, '-') || data[0] < 0)
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
@@ -70,7 +80,7 @@ static void	put_format(char conversion, va_list ap, int data[4], char *flags)
 		s[0] = (unsigned char)va_arg(ap, int);
 	}
 	else if (conversion == 's')
-		s = ft_strdup(va_arg(ap, char *));
+		s = ft_format_str(va_arg(ap, char *), data[1]);
 	else if (ft_strchr("di", conversion))
 		s = ft_itoa(va_arg(ap, int));
 	else if (ft_strchr("uxX", conversion))
@@ -99,11 +109,10 @@ int			ft_printf(const char *fmt, ...)
 			ft_bzero(&data[0], sizeof(int) * 3);
 			while (ft_strchr("-0# +", *fmt))
 				if (!ft_strchr(flags, *fmt++))
-					flags[data[2]] = *(fmt - 1);
+					flags[data[2]++] = *(fmt - 1);
 			set_data(&fmt, ap, &data[0]);
-			if (*fmt == '.')
-				set_data(&fmt, ap, &data[1]);
 			put_format(*fmt++, ap, data, &flags[0]);
+
 		}
 		else
 			output_char(*(fmt - 1), &data[3]);
