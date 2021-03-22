@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 08:24:45 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 10:04:05 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,4 @@ int			ft_printf(const char *fmt, ...)
 	}
 	va_end(ap);
 	return (0);
-}
-
-int			main(void)
-{
-	char	*str = malloc(1);
-
-	ft_printf("%-15s-%10c\n%#10.6x\n%p", "bonjour", 't', 5499, str);
-	write(1, "\n", 1);
-	printf("%-15s-%10c\n%#10.6x\n%p", "bonjour", 't', 5499, str);
 }
