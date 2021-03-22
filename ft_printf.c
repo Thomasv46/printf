@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 16:21:26 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 20:56:23 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static void	output_char(char c, int *count)
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
-
 	if (ft_isdigit(**fmt))
 		*data = (ft_atoi(*fmt));
 	else if (**fmt == '*')
@@ -31,13 +30,17 @@ static void	set_data(const char **fmt, va_list ap, int *data)
 	while (ft_isdigit(**fmt))
 		(*fmt)++;
 	if (**fmt == '.')
-		(*fmt)++;
-	if (ft_isdigit(**fmt))
-		*(data + 1) = (ft_atoi(*fmt));
-	else if (**fmt == '*')
 	{
-		*(data + 1) = (va_arg(ap, int));
 		(*fmt)++;
+		if (ft_isdigit(**fmt))
+			*(data + 1) = (ft_atoi(*fmt));
+		else if (**fmt == '*')
+		{
+			*(data + 1) = (va_arg(ap, int));
+			(*fmt)++;
+		}
+		else
+			*(data + 1) = 0;
 	}
 	while (ft_isdigit(**fmt))
 		(*fmt)++;
@@ -58,7 +61,7 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 	if (!ft_strchr(flags, '-') && data[0] >= 0)
 	{
 		if (ft_strchr(flags, '0') && ft_strchr("sdiuxXefg", conversion)
-			&& (!ft_strchr("diuxX", conversion) || !data[1]))
+			&& (!ft_strchr("uxX", conversion) || !data[1]))
 			c = '0';
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
@@ -110,9 +113,9 @@ int			ft_printf(const char *fmt, ...)
 			while (ft_strchr("-0# +", *fmt))
 				if (!ft_strchr(flags, *fmt++))
 					flags[data[2]++] = *(fmt - 1);
+			data[1] = -1;
 			set_data(&fmt, ap, &data[0]);
 			put_format(*fmt++, ap, data, &flags[0]);
-
 		}
 		else
 			output_char(*(fmt - 1), &data[3]);
