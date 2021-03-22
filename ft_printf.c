@@ -6,11 +6,17 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 10:04:05 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 14:53:03 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+static void	output_char(char c, int *count)
+{
+	ft_putchar_fd(c, 1);
+	(*count)++;
+}
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
@@ -27,7 +33,7 @@ static void	set_data(const char **fmt, va_list ap, int *data)
 		(*fmt)++;
 }
 
-static void	ft_pad(char conversion, int data[3], char *s, char *flags)
+static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 {
 	int		size;
 	char	c;
@@ -45,15 +51,16 @@ static void	ft_pad(char conversion, int data[3], char *s, char *flags)
 			&& (!ft_strchr("diuxX", conversion) || !data[1]))
 			c = '0';
 		while (data[0]-- > size)
-			ft_putchar_fd(c, 1);
+			output_char(c, &data[3]);
 	}
 	ft_putstr_fd(s, 1);
+	data[3] += ft_strlen(s);
 	if (ft_strchr(flags, '-') || data[0] < 0)
 		while (data[0]-- > size)
-			ft_putchar_fd(c, 1);
+			output_char(c, &data[3]);
 }
 
-static void	put_format(char conversion, va_list ap, int data[2], char *flags)
+static void	put_format(char conversion, va_list ap, int data[4], char *flags)
 {
 	char	*s;
 
@@ -70,6 +77,8 @@ static void	put_format(char conversion, va_list ap, int data[2], char *flags)
 		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, data, flags);
 	if (conversion == 'p')
 		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, data, flags);
+	if (conversion == '%')
+		s = ft_strdup("%");
 	ft_pad(conversion, data, s, flags);
 	free(s);
 }
@@ -77,10 +86,11 @@ static void	put_format(char conversion, va_list ap, int data[2], char *flags)
 int			ft_printf(const char *fmt, ...)
 {
 	va_list ap;
-	int		data[3];
+	int		data[4];
 	char	flags[6];
 
 	va_start(ap, fmt);
+	data[3] = 0;
 	while (*fmt)
 	{
 		if (*fmt++ == '%')
@@ -96,8 +106,8 @@ int			ft_printf(const char *fmt, ...)
 			put_format(*fmt++, ap, data, &flags[0]);
 		}
 		else
-			ft_putchar_fd(*(fmt - 1), 1);
+			output_char(*(fmt - 1), &data[3]);
 	}
 	va_end(ap);
-	return (0);
+	return (data[3]);
 }

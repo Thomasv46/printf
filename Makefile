@@ -1,35 +1,36 @@
 SRCS		=	ft_printf.c ft_putnbr_base.c
 
-BONUS		=
+LIBFTSRCS	=
 
 OBJS		=	${SRCS:.c=.o}
-
-OBONUS		=	${BONUS:.c=.o}
 
 CC			=	gcc
 
 CPPFLAGS	=	-Ilibft
 
-FLAGS		=	-Wall -Wextra -Werror -L libft -lft
+FLAGS		=	-Wall -Wextra -Werror
+
+LDFLAGS		=	-L libft
+
+LDLIBS		=	-lft
 
 NAME		=	libftprintf.a
 
-RM			= rm -f
+RM			=	rm -f
 
 ${NAME}		:	${OBJS}
-				$(MAKE) -C libft
-				ar rc ${NAME} ${OBJS}
+				$(MAKE) bonus -C libft
+				ar rc ${NAME} ${OBJS} ./libft/*.o
 				ranlib ${NAME}
 
-bonus		:	${NAME} ${OBONUS}
-				ar rc ${NAME} ${OBONUS}
-
-all			:	${NAME} bonus
+all			:	${NAME}
 
 clean		:
 				${RM} ${OBJS} ${OBONUS}
+				$(MAKE) clean -C libft
 
 fclean		:	clean
 				${RM} ${NAME}
+				$(MAKE) fclean -C libft
 
 re			:	fclean all
