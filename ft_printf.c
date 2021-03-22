@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 21:46:13 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 22:15:25 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 		if (ft_strchr(flags, '0') && ft_strchr("sdiuxXefg", conversion)
 			&& (!ft_strchr("diuxX", conversion) || data[1] == -1))
 			c = '0';
+		if (c == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", conversion))
+			ft_putchar_fd(*s++, 1);
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
 	}
