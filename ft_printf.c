@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/21 22:40:47 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 08:24:45 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ static void	put_format(char conversion, va_list ap, int data[2], char *flags)
 	else if (ft_strchr("di", conversion))
 		s = ft_itoa(va_arg(ap, int));
 	else if (ft_strchr("uxX", conversion))
-		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, flags);
+		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, data, flags);
 	if (conversion == 'p')
-		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, flags);
+		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, data, flags);
 	ft_pad(conversion, data, s, flags);
 	free(s);
 }
@@ -105,7 +105,8 @@ int			ft_printf(const char *fmt, ...)
 int			main(void)
 {
 	char	*str = malloc(1);
-	ft_printf("%-15s-%10c\n%.10d\n%p", "bonjour", 't', 5499, str);
+
+	ft_printf("%-15s-%10c\n%#10.6x\n%p", "bonjour", 't', 5499, str);
 	write(1, "\n", 1);
-	printf("%-15s-%10c\n%.10d\n%p", "bonjour", 't', 5499, str);
+	printf("%-15s-%10c\n%#10.6x\n%p", "bonjour", 't', 5499, str);
 }
