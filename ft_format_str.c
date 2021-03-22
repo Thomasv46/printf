@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 15:24:21 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/22 21:39:36 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/22 22:45:59 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@ char	*ft_format_str(char *s, int size)
 {
 	char	*str;
 
+	if (!s)
+		s = "(null)";
 	if (size < 0 || (unsigned int)size > ft_strlen(s))
 		size = ft_strlen(s);
 	str = malloc(size + 1);
+	if (!str)
+		return (0);
 	ft_strlcpy(str, s, size + 1);
 	return (str);
 }
