@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/23 21:20:01 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/23 21:34:31 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,6 @@ static void	set_data(const char **fmt, va_list ap, int *data, char *flags)
 		while (ft_isdigit(**fmt))
 			(*fmt)++;
 	}
-	if (*data < 0 && !ft_strchr(flags, '-'))
-	{
-		*data = -*data;
-		flags[*(data + 2)] = '-';
-	}
 }
 
 static void	ft_pad(char conversion, int data[4], char *s, char *flags)
@@ -64,7 +59,7 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 			c = '0';
 		if (c == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", conversion))
 			ft_putchar_fd(*s++, 1);
-		if (c == '0' && ((ft_strchr(flags, '#') && ft_strchr("xXefg", conversion)) || ft_strchr("p", conversion)))
+		if (c == '0' && ((ft_strchr(flags, '#') && ft_strchr("xXefg", conversion)) || conversion == 'p'))
 		{
 			ft_putchar_fd(*s++, 1);
 			ft_putchar_fd(*s++, 1);
@@ -75,8 +70,12 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 	ft_putstr_fd(s, 1);
 	data[3] += size;
 	if (ft_strchr(flags, '-') || data[0] < 0)
+	{
+		if (data[0] < 0)
+			data[0] = -data[0];
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
+	}
 }
 
 static void	put_format(char conversion, va_list ap, int data[4], char *flags)
