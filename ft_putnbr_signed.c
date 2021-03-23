@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/22 21:52:09 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/23 21:22:11 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	get_size(int n, int data[3], char *flags)
 	return (i);
 }
 
-char	*ft_putnbr_signed(int n, int data[3], char *flags)
+char		*ft_putnbr_signed(int n, int data[3], char *flags)
 {
 	char	*s;
 	size_t	size;
@@ -41,9 +41,8 @@ char	*ft_putnbr_signed(int n, int data[3], char *flags)
 	if (!s)
 		return (0);
 	*(s + size) = 0;
-	while (size > 0)
+	while (size-- > 0)
 	{
-		size--;
 		if (n < 0)
 			*(s + size) = -(n % -10) + '0';
 		else

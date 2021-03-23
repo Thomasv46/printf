@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/23 17:26:39 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/23 21:20:01 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	output_char(char c, int *count)
 	(*count)++;
 }
 
-static void	set_data(const char **fmt, va_list ap, int *data)
+static void	set_data(const char **fmt, va_list ap, int *data, char *flags)
 {
 	if (ft_isdigit(**fmt))
 		*data = (ft_atoi(*fmt));
@@ -33,16 +33,21 @@ static void	set_data(const char **fmt, va_list ap, int *data)
 	{
 		(*fmt)++;
 		if (ft_isdigit(**fmt))
-			*(data + 1) = (ft_atoi(*fmt));
+			*(data + 1) = ft_atoi(*fmt);
 		else if (**fmt == '*')
 		{
-			*(data + 1) = (va_arg(ap, int));
+			*(data + 1) = va_arg(ap, int);
 			(*fmt)++;
 		}
 		else
 			*(data + 1) = 0;
 		while (ft_isdigit(**fmt))
 			(*fmt)++;
+	}
+	if (*data < 0 && !ft_strchr(flags, '-'))
+	{
+		*data = -*data;
+		flags[*(data + 2)] = '-';
 	}
 }
 
@@ -53,11 +58,6 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 
 	c = ' ';
 	size = ft_strlen(s);
-	if (data[0] < 0 && !ft_strchr(flags, '-'))
-	{
-		data[0] = -data[0];
-		flags[data[2]] = '-';
-	}
 	if (!ft_strchr(flags, '-') && data[0] >= 0)
 	{
 		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", conversion) || data[1] == -1))
@@ -96,7 +96,7 @@ static void	put_format(char conversion, va_list ap, int data[4], char *flags)
 		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, data, flags);
 	if (conversion == 'p')
 		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, data, flags);
-	if (ft_strchr("nfgeoZ", conversion))
+	if (ft_strchr("nfge", conversion))
 		return ;
 	if (conversion == '%')
 		s = ft_strdup("%");
@@ -122,7 +122,7 @@ int			ft_printf(const char *fmt, ...)
 				if (!ft_strchr(flags, *fmt++))
 					flags[data[2]++] = *(fmt - 1);
 			data[1] = -1;
-			set_data(&fmt, ap, &data[0]);
+			set_data(&fmt, ap, &data[0], flags);
 			put_format(*fmt++, ap, data, &flags[0]);
 		}
 		else

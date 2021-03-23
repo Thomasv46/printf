@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/23 17:13:46 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/23 20:59:47 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,13 @@ char		*ft_putnbr_base(unsigned long n, char c, int data[3], char *flags)
 	size = get_n_size(n, data, c, flags);
 	s = malloc(size + 1);
 	*(s + size--) = 0;
-	if (!n)
-		*(s + size--) = base_index(0, base);
-	while (n)
+	if (!n && !data[1])
+		*(s + size--) = 0;
+	while (size >= 0)
 	{
 		*(s + size--) = base_index(n % data[2], base);
 		n /= data[2];
 	}
-	while (size >= 0)
-		*(s + size--) = '0';
 	if ((ft_strchr(flags, '#') && c != 'u') || c == 'p')
 	{
 		if (c == 'p')
