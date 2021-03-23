@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 08:50:07 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/23 17:13:46 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ static int	get_n_size(unsigned long n, int data[3], char c, char *flags)
 	int	size;
 	int	base_size;
 
-	size = 0;
+	size = 1;
 	base_size = data[2];
-	while (n)
+	while (n / base_size)
 	{
 		n /= base_size;
 		size++;
 	}
-	if (data[1] > size && c != 'p')
+	if (data[1] > size)
 		size = data[1];
 	if ((ft_strchr(flags, '#') && c != 'u') || c == 'p')
 		size += 2;
@@ -72,7 +72,7 @@ char		*ft_putnbr_base(unsigned long n, char c, int data[3], char *flags)
 	}
 	while (size >= 0)
 		*(s + size--) = '0';
-	if (ft_strchr(flags, '#') || c == 'p')
+	if ((ft_strchr(flags, '#') && c != 'u') || c == 'p')
 	{
 		if (c == 'p')
 			c = 'x';

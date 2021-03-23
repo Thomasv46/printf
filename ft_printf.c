@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/22 22:56:08 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/23 17:26:39 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ static void	set_data(const char **fmt, va_list ap, int *data)
 		}
 		else
 			*(data + 1) = 0;
+		while (ft_isdigit(**fmt))
+			(*fmt)++;
 	}
-	while (ft_isdigit(**fmt))
-		(*fmt)++;
 }
 
 static void	ft_pad(char conversion, int data[4], char *s, char *flags)
@@ -60,12 +60,11 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 	}
 	if (!ft_strchr(flags, '-') && data[0] >= 0)
 	{
-		if (ft_strchr(flags, '0') && ft_strchr("psdiuxXefg", conversion)
-			&& (!ft_strchr("diuxX", conversion) || data[1] == -1))
+		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", conversion) || data[1] == -1))
 			c = '0';
 		if (c == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", conversion))
 			ft_putchar_fd(*s++, 1);
-		if (c == '0' && ft_strchr("#", flags) && ft_strchr("puxXefg", conversion))
+		if (c == '0' && ((ft_strchr(flags, '#') && ft_strchr("xXefg", conversion)) || ft_strchr("p", conversion)))
 		{
 			ft_putchar_fd(*s++, 1);
 			ft_putchar_fd(*s++, 1);
@@ -97,6 +96,8 @@ static void	put_format(char conversion, va_list ap, int data[4], char *flags)
 		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, data, flags);
 	if (conversion == 'p')
 		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, data, flags);
+	if (ft_strchr("nfgeoZ", conversion))
+		return ;
 	if (conversion == '%')
 		s = ft_strdup("%");
 	ft_pad(conversion, data, s, flags);
