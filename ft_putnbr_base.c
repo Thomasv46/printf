@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/23 20:59:47 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/24 11:28:21 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ static char	base_index(int i, const char *base)
 
 static int	get_n_size(unsigned long n, int data[3], char c, char *flags)
 {
-	int	size;
-	int	base_size;
+	int				size;
+	int				base_size;
+	unsigned long	n2;
 
+	n2 = n;
 	size = 1;
 	base_size = data[2];
 	while (n / base_size)
@@ -33,7 +35,7 @@ static int	get_n_size(unsigned long n, int data[3], char c, char *flags)
 	}
 	if (data[1] > size)
 		size = data[1];
-	if ((ft_strchr(flags, '#') && c != 'u') || c == 'p')
+	if ((ft_strchr(flags, '#') && c != 'u' && n2) || c == 'p')
 		size += 2;
 	return (size);
 }
@@ -42,22 +44,23 @@ static char	*get_base(char c)
 {
 	char *s;
 
-	s = 0;
 	if (c == 'u')
 		s = "0123456789";
-	else if (c == 'x' || c == 'p')
-		s = "0123456789abcdef";
 	else if (c == 'X')
 		s = "0123456789ABCDEF";
+	else
+		s = "0123456789abcdef";
 	return (s);
 }
 
 char		*ft_putnbr_base(unsigned long n, char c, int data[3], char *flags)
 {
-	int		size;
-	char	*s;
-	char	*base;
+	int				size;
+	char			*s;
+	char			*base;
+	unsigned long	n2;
 
+	n2 = n;
 	base = get_base(c);
 	data[2] = ft_strlen(base);
 	size = get_n_size(n, data, c, flags);
@@ -70,7 +73,7 @@ char		*ft_putnbr_base(unsigned long n, char c, int data[3], char *flags)
 		*(s + size--) = base_index(n % data[2], base);
 		n /= data[2];
 	}
-	if ((ft_strchr(flags, '#') && c != 'u') || c == 'p')
+	if ((ft_strchr(flags, '#') && c != 'u' && n2) || c == 'p')
 	{
 		if (c == 'p')
 			c = 'x';

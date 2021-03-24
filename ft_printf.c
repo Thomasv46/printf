@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/23 21:34:31 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/24 11:53:17 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,34 @@ static void	output_char(char c, int *count)
 	(*count)++;
 }
 
-static void	set_data(const char **fmt, va_list ap, int *data, char *flags)
+static void	get_data(const char **fmt, va_list ap, int *data)
 {
 	if (ft_isdigit(**fmt))
-		*data = (ft_atoi(*fmt));
+		*data = ft_atoi(*fmt);
 	else if (**fmt == '*')
 	{
-		*data = (va_arg(ap, int));
+		*data = va_arg(ap, int);
 		(*fmt)++;
 	}
+	else
+		*data = 0;
 	while (ft_isdigit(**fmt))
 		(*fmt)++;
+}
+
+static void	set_data(const char **fmt, va_list ap, int *data, char *flags)
+{
+	get_data(fmt, ap, data);
 	if (**fmt == '.')
 	{
 		(*fmt)++;
-		if (ft_isdigit(**fmt))
-			*(data + 1) = ft_atoi(*fmt);
-		else if (**fmt == '*')
-		{
-			*(data + 1) = va_arg(ap, int);
-			(*fmt)++;
-		}
-		else
-			*(data + 1) = 0;
-		while (ft_isdigit(**fmt))
-			(*fmt)++;
+		get_data(fmt, ap, data + 1);
+	}
+	if (*data < 0)
+	{
+		if (!ft_strchr(flags, '-'))
+			flags[data[2]] = '-';
+		*data = -*data;
 	}
 }
 
@@ -53,7 +56,9 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 
 	c = ' ';
 	size = ft_strlen(s);
-	if (!ft_strchr(flags, '-') && data[0] >= 0)
+	if (conversion == 'c' && !*s)
+		size = 1;
+	if (!ft_strchr(flags, '-'))
 	{
 		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", conversion) || data[1] == -1))
 			c = '0';
@@ -67,15 +72,16 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
 	}
-	ft_putstr_fd(s, 1);
-	data[3] += size;
-	if (ft_strchr(flags, '-') || data[0] < 0)
+	if (conversion == 'c' && !*s)
+		output_char(*s, &data[3]);
+	else
 	{
-		if (data[0] < 0)
-			data[0] = -data[0];
+		ft_putstr_fd(s, 1);
+		data[3] += size;
+	}
+	if (ft_strchr(flags, '-'))
 		while (data[0]-- > size)
 			output_char(c, &data[3]);
-	}
 }
 
 static void	put_format(char conversion, va_list ap, int data[4], char *flags)
