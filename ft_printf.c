@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 13:35:30 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 14:58:50 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ static void	ft_pad(char c, int data[4], char *s, char *flags)
 			pad = '0';
 		if (pad == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", c))
 			ft_putchar_fd(*s++, 1);
-		if (pad == '0' && ((ft_strchr(flags, '#') && ft_strchr("xXefg", c)) || c == 'p'))
+		if (pad == '0' && ((ft_strchr(flags, '#')
+			&& ft_strchr("xXefg", c)) || c == 'p'))
 		{
 			ft_putchar_fd(*s++, 1);
 			ft_putchar_fd(*s++, 1);
@@ -106,14 +107,17 @@ int			ft_printf(const char *fmt, ...)
 	while (*fmt)
 		if (*fmt++ == '%')
 		{
-			ft_bzero(&flags[0], 6);
-			ft_bzero(&data[0], sizeof(int) * 3);
-			while (ft_strchr("-0# +", *fmt))
-				if (!ft_strchr(flags, *fmt++))
-					flags[data[2]++] = *(fmt - 1);
-			data[1] = -1;
-			get_data(&fmt, ap, data, flags);
-			put_format(*fmt++, ap, data, &flags[0]);
+			if (*fmt)
+			{
+				ft_bzero(&flags[0], 6);
+				ft_bzero(&data[0], sizeof(int) * 3);
+				while (ft_strchr("-0# +", *fmt))
+					if (!ft_strchr(flags, *fmt++))
+						flags[data[2]++] = *(fmt - 1);
+				data[1] = -1;
+				get_data(&fmt, ap, data, flags);
+				put_format(*fmt++, ap, data, &flags[0]);
+			}
 		}
 		else
 			output_char(*(fmt - 1), &data[3]);
