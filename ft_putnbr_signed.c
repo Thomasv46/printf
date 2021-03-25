@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/25 12:25:16 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 12:57:59 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,5 @@ char		*ft_format_di(int n, int *data, char *flags)
 		*s = '+';
 	else if (ft_strchr(flags, ' '))
 		*s = ' ';
-	*(data + 2) = ft_strlen(s);
 	return (s);
 }

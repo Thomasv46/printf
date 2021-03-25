@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 12:54:30 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 13:35:30 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,16 @@ static void	get_data(const char **fmt, va_list ap, int *data, char *flags)
 		*data = ft_atoi(*fmt);
 	while (ft_isdigit(**fmt))
 		(*fmt)++;
-	if (**fmt == '.' && *(data + 1) == -1)
+	if (**fmt == '.' && flags)
 	{
 		(*fmt)++;
-		get_data(fmt, ap, data + 1, flags);
+		get_data(fmt, ap, data + 1, 0);
+	}
+	if (data[0] < 0 && flags)
+	{
+		if (!ft_strchr(flags, '-'))
+			flags[data[2]] = '-';
+		data[0] = -data[0];
 	}
 }
 
@@ -107,12 +113,6 @@ int			ft_printf(const char *fmt, ...)
 					flags[data[2]++] = *(fmt - 1);
 			data[1] = -1;
 			get_data(&fmt, ap, data, flags);
-			if (data[0] < 0)
-			{
-				if (!ft_strchr(flags, '-'))
-					flags[data[2]] = '-';
-				data[0] = -data[0];
-			}
 			put_format(*fmt++, ap, data, &flags[0]);
 		}
 		else
