@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 12:27:42 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 12:54:30 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,9 @@ static void	get_data(const char **fmt, va_list ap, int *data, char *flags)
 
 static void	ft_pad(char c, int data[4], char *s, char *flags)
 {
-	int		size;
 	char	pad;
 
 	pad = ' ';
-	size = ft_strlen(s);
-	if (c == 'c')
-		size = data[2];
 	if (!ft_strchr(flags, '-'))
 	{
 		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", c) || data[1] == -1))
@@ -56,15 +52,15 @@ static void	ft_pad(char c, int data[4], char *s, char *flags)
 			ft_putchar_fd(*s++, 1);
 			ft_putchar_fd(*s++, 1);
 		}
-		while (data[0]-- > size)
+		while (data[0]-- > data[2])
 			output_char(pad, &data[3]);
 	}
-	data[3] += size;
+	data[3] += data[2];
 	if (c == 'c' && !*s)
 		ft_putchar_fd(*s, 1);
 	else
 		ft_putstr_fd(s, 1);
-	while (data[0]-- > size)
+	while (data[0]-- > data[2])
 		output_char(pad, &data[3]);
 }
 
@@ -73,9 +69,9 @@ static void	put_format(char c, va_list ap, int data[4], char *flags)
 	char	*s;
 
 	if (c == 'c')
-		s = ft_format_c((unsigned char)va_arg(ap, int), data);
+		s = ft_format_c((unsigned char)va_arg(ap, int));
 	else if (c == 's')
-		s = ft_format_s(va_arg(ap, char *), data[1], data);
+		s = ft_format_s(va_arg(ap, char *), data[1]);
 	else if (ft_strchr("di", c))
 		s = ft_format_di(va_arg(ap, int), data, flags);
 	else if (ft_strchr("uxX", c))
@@ -85,7 +81,10 @@ static void	put_format(char c, va_list ap, int data[4], char *flags)
 	else if (ft_strchr("nfge", c))
 		return ;
 	else
-		s = ft_format_c(c, data);
+		s = ft_format_c(c);
+	data[2] = ft_strlen(s);
+	if (c == 'c')
+		data[2] = 1;
 	ft_pad(c, data, s, flags);
 	free(s);
 }
