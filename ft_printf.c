@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/24 11:53:17 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 11:15:39 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,34 +18,21 @@ static void	output_char(char c, int *count)
 	(*count)++;
 }
 
-static void	get_data(const char **fmt, va_list ap, int *data)
+static void	get_data(const char **fmt, va_list ap, int *data, char *flags)
 {
-	if (ft_isdigit(**fmt))
-		*data = ft_atoi(*fmt);
-	else if (**fmt == '*')
+	if (**fmt == '*')
 	{
 		*data = va_arg(ap, int);
 		(*fmt)++;
 	}
 	else
-		*data = 0;
+		*data = ft_atoi(*fmt);
 	while (ft_isdigit(**fmt))
 		(*fmt)++;
-}
-
-static void	set_data(const char **fmt, va_list ap, int *data, char *flags)
-{
-	get_data(fmt, ap, data);
-	if (**fmt == '.')
+	if (**fmt == '.' && *(data + 1) == -1)
 	{
 		(*fmt)++;
-		get_data(fmt, ap, data + 1);
-	}
-	if (*data < 0)
-	{
-		if (!ft_strchr(flags, '-'))
-			flags[data[2]] = '-';
-		*data = -*data;
+		get_data(fmt, ap, data + 1, flags);
 	}
 }
 
@@ -79,9 +66,8 @@ static void	ft_pad(char conversion, int data[4], char *s, char *flags)
 		ft_putstr_fd(s, 1);
 		data[3] += size;
 	}
-	if (ft_strchr(flags, '-'))
-		while (data[0]-- > size)
-			output_char(c, &data[3]);
+	while (data[0]-- > size)
+		output_char(c, &data[3]);
 }
 
 static void	put_format(char conversion, va_list ap, int data[4], char *flags)
@@ -89,22 +75,19 @@ static void	put_format(char conversion, va_list ap, int data[4], char *flags)
 	char	*s;
 
 	if (conversion == 'c')
-	{
-		s = ft_calloc(1, 2);
-		s[0] = (unsigned char)va_arg(ap, int);
-	}
+		s = ft_format_c((unsigned char)va_arg(ap, int));
 	else if (conversion == 's')
-		s = ft_format_str(va_arg(ap, char *), data[1]);
+		s = ft_format_s(va_arg(ap, char *), data[1]);
 	else if (ft_strchr("di", conversion))
-		s = ft_putnbr_signed(va_arg(ap, int), data, flags);
+		s = ft_format_di(va_arg(ap, int), data, flags);
 	else if (ft_strchr("uxX", conversion))
-		s = ft_putnbr_base(va_arg(ap, unsigned int), conversion, data, flags);
-	if (conversion == 'p')
-		s = ft_putnbr_base(va_arg(ap, unsigned long), conversion, data, flags);
-	if (ft_strchr("nfge", conversion))
+		s = ft_format_uxp(va_arg(ap, unsigned int), conversion, data, flags);
+	else if (conversion == 'p')
+		s = ft_format_uxp(va_arg(ap, unsigned long), conversion, data, flags);
+	else if (ft_strchr("nfge", conversion))
 		return ;
-	if (conversion == '%')
-		s = ft_strdup("%");
+	else
+		s = ft_format_c(conversion);
 	ft_pad(conversion, data, s, flags);
 	free(s);
 }
@@ -118,7 +101,6 @@ int			ft_printf(const char *fmt, ...)
 	va_start(ap, fmt);
 	data[3] = 0;
 	while (*fmt)
-	{
 		if (*fmt++ == '%')
 		{
 			ft_bzero(&flags[0], 6);
@@ -127,12 +109,17 @@ int			ft_printf(const char *fmt, ...)
 				if (!ft_strchr(flags, *fmt++))
 					flags[data[2]++] = *(fmt - 1);
 			data[1] = -1;
-			set_data(&fmt, ap, &data[0], flags);
+			get_data(&fmt, ap, &data, flags);
+			if (data[0] < 0)
+			{
+				if (!ft_strchr(flags, '-'))
+					flags[data[2]] = '-';
+				data[0] = -data[0];
+			}
 			put_format(*fmt++, ap, data, &flags[0]);
 		}
 		else
 			output_char(*(fmt - 1), &data[3]);
-	}
 	va_end(ap);
 	return (data[3]);
 }

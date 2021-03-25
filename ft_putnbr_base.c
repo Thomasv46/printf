@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/24 11:28:21 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 09:31:37 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,15 @@ static int	get_n_size(unsigned long n, int data[3], char c, char *flags)
 
 static char	*get_base(char c)
 {
-	char *s;
-
 	if (c == 'u')
-		s = "0123456789";
+		return ("0123456789");
 	else if (c == 'X')
-		s = "0123456789ABCDEF";
+		return ("0123456789ABCDEF");
 	else
-		s = "0123456789abcdef";
-	return (s);
+		return ("0123456789abcdef");
 }
 
-char		*ft_putnbr_base(unsigned long n, char c, int data[3], char *flags)
+char		*ft_format_uxp(unsigned long n, char c, int data[3], char *flags)
 {
 	int				size;
 	char			*s;

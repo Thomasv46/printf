@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/23 21:22:11 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 09:21:41 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static int	get_size(int n, int data[3], char *flags)
 {
 	int	i;
 
+	if (!n && !data[1])
+		return (0);
 	i = 1;
 	while (n / 10)
 	{
@@ -29,7 +31,7 @@ static int	get_size(int n, int data[3], char *flags)
 	return (i);
 }
 
-char		*ft_putnbr_signed(int n, int data[3], char *flags)
+char		*ft_format_di(int n, int data[3], char *flags)
 {
 	char	*s;
 	size_t	size;

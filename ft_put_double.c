@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/24 11:06:38 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 09:45:47 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	get_n_size(long n, int data[3], char *flags)
 	return (size);
 }
 
-char	*ft_put_double(long n, int data[3], char *flags)
+char	*ft_format_f(long n, int data[3], char *flags)
 {
 	int		size;
 	char	*s;
