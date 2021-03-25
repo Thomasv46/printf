@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 14:58:50 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 15:21:21 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ static void	ft_pad(char c, int data[4], char *s, char *flags)
 	{
 		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", c) || data[1] == -1))
 			pad = '0';
-		if (pad == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", c))
+		if (s && pad == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", c))
 			ft_putchar_fd(*s++, 1);
-		if (pad == '0' && ((ft_strchr(flags, '#')
+		if (s && pad == '0' && ((ft_strchr(flags, '#')
 			&& ft_strchr("xXefg", c)) || c == 'p'))
 		{
 			ft_putchar_fd(*s++, 1);
@@ -63,9 +63,9 @@ static void	ft_pad(char c, int data[4], char *s, char *flags)
 			output_char(pad, &data[3]);
 	}
 	data[3] += data[2];
-	if (c == 'c' && !*s)
+	if (c == 'c' && s && !*s)
 		ft_putchar_fd(*s, 1);
-	else
+	else if (s)
 		ft_putstr_fd(s, 1);
 	while (data[0]-- > data[2])
 		output_char(pad, &data[3]);
@@ -89,11 +89,13 @@ static void	put_format(char c, va_list ap, int data[4], char *flags)
 		return ;
 	else
 		s = ft_format_c(c);
-	data[2] = ft_strlen(s);
+	if (s)
+		data[2] = ft_strlen(s);
 	if (c == 'c')
 		data[2] = 1;
 	ft_pad(c, data, s, flags);
-	free(s);
+	if (s)
+		free(s);
 }
 
 int			ft_printf(const char *fmt, ...)

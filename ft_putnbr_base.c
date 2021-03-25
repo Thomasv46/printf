@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 12:57:50 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 15:37:22 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ static char	base_index(int i, const char *base)
 static int	get_n_size(unsigned long n, int data[3], char c, char *flags)
 {
 	int				size;
-	int				base_size;
 	unsigned long	n2;
 
 	n2 = n;
 	size = 1;
-	base_size = data[2];
-	while (n / base_size)
+	if (!n && !data[1])
+		size = 0;
+	while (n / data[2])
 	{
-		n /= base_size;
+		n /= data[2];
 		size++;
 	}
 	if (data[1] > size)
@@ -40,14 +40,18 @@ static int	get_n_size(unsigned long n, int data[3], char c, char *flags)
 	return (size);
 }
 
-static char	*get_base(char c)
+static char	*get_base(char c, int *size)
 {
+	char	*s;
+
 	if (c == 'u')
-		return ("0123456789");
+		s = "0123456789";
 	else if (c == 'X')
-		return ("0123456789ABCDEF");
+		s = "0123456789ABCDEF";
 	else
-		return ("0123456789abcdef");
+		s = "0123456789abcdef";
+	*size = ft_strlen(s);
+	return (s);
 }
 
 char		*ft_format_uxp(unsigned long n, char c, int *data, char *flags)
@@ -58,13 +62,12 @@ char		*ft_format_uxp(unsigned long n, char c, int *data, char *flags)
 	unsigned long	n2;
 
 	n2 = n;
-	base = get_base(c);
-	data[2] = ft_strlen(base);
+	base = get_base(c, &data[2]);
 	size = get_n_size(n, data, c, flags);
 	s = malloc(size + 1);
+	if (!s)
+		return (0);
 	*(s + size--) = 0;
-	if (!n && !data[1])
-		*(s + size--) = 0;
 	while (size >= 0)
 	{
 		*(s + size--) = base_index(n % data[2], base);
