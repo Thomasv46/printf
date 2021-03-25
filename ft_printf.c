@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 15:21:21 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 16:43:10 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,17 @@ static void	output_char(char c, int *count)
 	(*count)++;
 }
 
-static void	get_data(const char **fmt, va_list ap, int *data, char *flags)
+static void	set_data(const char **fmt, va_list ap, int *data, char *flags)
 {
+	if (flags)
+		data[1] = -1;
 	if (**fmt == '*')
 	{
 		*data = va_arg(ap, int);
 		(*fmt)++;
 	}
+	else if (!flags && ft_atoi(*fmt) < 0)
+		*data = 0;
 	else
 		*data = ft_atoi(*fmt);
 	while (ft_isdigit(**fmt))
@@ -32,7 +36,7 @@ static void	get_data(const char **fmt, va_list ap, int *data, char *flags)
 	if (**fmt == '.' && flags)
 	{
 		(*fmt)++;
-		get_data(fmt, ap, data + 1, 0);
+		set_data(fmt, ap, data + 1, 0);
 	}
 	if (data[0] < 0 && flags)
 	{
@@ -53,8 +57,8 @@ static void	ft_pad(char c, int data[4], char *s, char *flags)
 			pad = '0';
 		if (s && pad == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", c))
 			ft_putchar_fd(*s++, 1);
-		if (s && pad == '0' && ((ft_strchr(flags, '#')
-			&& ft_strchr("xXefg", c)) || c == 'p'))
+		if (s && pad == '0' && (c == 'p'
+			|| (ft_strchr(flags, '#') && ft_strchr("xXefg", c))))
 		{
 			ft_putchar_fd(*s++, 1);
 			ft_putchar_fd(*s++, 1);
@@ -116,8 +120,7 @@ int			ft_printf(const char *fmt, ...)
 				while (ft_strchr("-0# +", *fmt))
 					if (!ft_strchr(flags, *fmt++))
 						flags[data[2]++] = *(fmt - 1);
-				data[1] = -1;
-				get_data(&fmt, ap, data, flags);
+				set_data(&fmt, ap, data, flags);
 				put_format(*fmt++, ap, data, &flags[0]);
 			}
 		}
