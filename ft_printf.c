@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 16:43:10 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 17:07:06 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,8 @@ int			ft_printf(const char *fmt, ...)
 					if (!ft_strchr(flags, *fmt++))
 						flags[data[2]++] = *(fmt - 1);
 				set_data(&fmt, ap, data, flags);
-				put_format(*fmt++, ap, data, &flags[0]);
+				if (*fmt)
+					put_format(*fmt++, ap, data, &flags[0]);
 			}
 		}
 		else
