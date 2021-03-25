@@ -1,4 +1,4 @@
-SRCS		=	ft_printf.c ft_format_uxp.c ft_format_str.c ft_format_di.c ft_put_double.c
+SRCS		=	ft_printf.c ft_format_uxp.c ft_format_str.c ft_format_di.c ft_format_f.c
 
 LIBFTSRCS	=
 
