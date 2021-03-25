@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/25 09:21:41 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 12:25:16 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	get_size(int n, int data[3], char *flags)
 	return (i);
 }
 
-char		*ft_format_di(int n, int data[3], char *flags)
+char		*ft_format_di(int n, int *data, char *flags)
 {
 	char	*s;
 	size_t	size;
@@ -57,5 +57,6 @@ char		*ft_format_di(int n, int data[3], char *flags)
 		*s = '+';
 	else if (ft_strchr(flags, ' '))
 		*s = ' ';
+	*(data + 2) = ft_strlen(s);
 	return (s);
 }

@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 11:15:39 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 12:27:42 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,59 +36,57 @@ static void	get_data(const char **fmt, va_list ap, int *data, char *flags)
 	}
 }
 
-static void	ft_pad(char conversion, int data[4], char *s, char *flags)
+static void	ft_pad(char c, int data[4], char *s, char *flags)
 {
 	int		size;
-	char	c;
+	char	pad;
 
-	c = ' ';
+	pad = ' ';
 	size = ft_strlen(s);
-	if (conversion == 'c' && !*s)
-		size = 1;
+	if (c == 'c')
+		size = data[2];
 	if (!ft_strchr(flags, '-'))
 	{
-		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", conversion) || data[1] == -1))
-			c = '0';
-		if (c == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", conversion))
+		if (ft_strchr(flags, '0') && (!ft_strchr("diuxX", c) || data[1] == -1))
+			pad = '0';
+		if (pad == '0' && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", c))
 			ft_putchar_fd(*s++, 1);
-		if (c == '0' && ((ft_strchr(flags, '#') && ft_strchr("xXefg", conversion)) || conversion == 'p'))
+		if (pad == '0' && ((ft_strchr(flags, '#') && ft_strchr("xXefg", c)) || c == 'p'))
 		{
 			ft_putchar_fd(*s++, 1);
 			ft_putchar_fd(*s++, 1);
 		}
 		while (data[0]-- > size)
-			output_char(c, &data[3]);
+			output_char(pad, &data[3]);
 	}
-	if (conversion == 'c' && !*s)
-		output_char(*s, &data[3]);
+	data[3] += size;
+	if (c == 'c' && !*s)
+		ft_putchar_fd(*s, 1);
 	else
-	{
 		ft_putstr_fd(s, 1);
-		data[3] += size;
-	}
 	while (data[0]-- > size)
-		output_char(c, &data[3]);
+		output_char(pad, &data[3]);
 }
 
-static void	put_format(char conversion, va_list ap, int data[4], char *flags)
+static void	put_format(char c, va_list ap, int data[4], char *flags)
 {
 	char	*s;
 
-	if (conversion == 'c')
-		s = ft_format_c((unsigned char)va_arg(ap, int));
-	else if (conversion == 's')
-		s = ft_format_s(va_arg(ap, char *), data[1]);
-	else if (ft_strchr("di", conversion))
+	if (c == 'c')
+		s = ft_format_c((unsigned char)va_arg(ap, int), data);
+	else if (c == 's')
+		s = ft_format_s(va_arg(ap, char *), data[1], data);
+	else if (ft_strchr("di", c))
 		s = ft_format_di(va_arg(ap, int), data, flags);
-	else if (ft_strchr("uxX", conversion))
-		s = ft_format_uxp(va_arg(ap, unsigned int), conversion, data, flags);
-	else if (conversion == 'p')
-		s = ft_format_uxp(va_arg(ap, unsigned long), conversion, data, flags);
-	else if (ft_strchr("nfge", conversion))
+	else if (ft_strchr("uxX", c))
+		s = ft_format_uxp(va_arg(ap, unsigned int), c, data, flags);
+	else if (c == 'p')
+		s = ft_format_uxp(va_arg(ap, unsigned long), c, data, flags);
+	else if (ft_strchr("nfge", c))
 		return ;
 	else
-		s = ft_format_c(conversion);
-	ft_pad(conversion, data, s, flags);
+		s = ft_format_c(c, data);
+	ft_pad(c, data, s, flags);
 	free(s);
 }
 
@@ -109,7 +107,7 @@ int			ft_printf(const char *fmt, ...)
 				if (!ft_strchr(flags, *fmt++))
 					flags[data[2]++] = *(fmt - 1);
 			data[1] = -1;
-			get_data(&fmt, ap, &data, flags);
+			get_data(&fmt, ap, data, flags);
 			if (data[0] < 0)
 			{
 				if (!ft_strchr(flags, '-'))

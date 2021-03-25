@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/25 09:31:37 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/03/25 12:27:14 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static char	*get_base(char c)
 		return ("0123456789abcdef");
 }
 
-char		*ft_format_uxp(unsigned long n, char c, int data[3], char *flags)
+char		*ft_format_uxp(unsigned long n, char c, int *data, char *flags)
 {
 	int				size;
 	char			*s;
@@ -76,5 +76,6 @@ char		*ft_format_uxp(unsigned long n, char c, int data[3], char *flags)
 			c = 'x';
 		*(s + 1) = c;
 	}
+	data[2] = ft_strlen(s);
 	return (s);
 }
