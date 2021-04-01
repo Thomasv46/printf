@@ -6,15 +6,14 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 11:01:05 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/03/26 15:19:00 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/01 09:45:23 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINT_H
-# define FT_PRINT_H
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
 # include "libft.h"
 # include <stdarg.h>
-#include <stdio.h>
 
 char	*ft_format_uxp(unsigned long n, char c, int *data, char *flags);
 int		ft_printf(const char *fmt, ...);
