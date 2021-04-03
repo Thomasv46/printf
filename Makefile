@@ -8,7 +8,7 @@ CC			=	gcc
 
 CPPFLAGS	=	-Ilibft
 
-FLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror
 
 LDFLAGS		=	-L libft
 

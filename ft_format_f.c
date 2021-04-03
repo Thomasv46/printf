@@ -6,33 +6,33 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/26 16:32:55 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/03 15:57:54 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	get_n_size(char *s, int data[3], char *flags)
+static int	get_n_size(char *s, int precision)
 {
 	int	size;
 
 	size = ft_strlen(s);
-	if (data[1] == -1)
+	if (precision == -1)
 		size += 7;
-	else if (data[1])
-		size += data[1] + 1;
+	else if (precision)
+		size += precision + 1;
 	return (size);
 }
 
-char		*ft_format_f(double n, int data[3], char *flags)
+char	*ft_format_f(double n, t_converter converter)
 {
 	int		size;
 	int		size2;
 	char	*s;
 	char	*s2;
 
-	s2 = ft_format_di(n, data, flags);
-	size = get_n_size(s2, data, flags);
+	s2 = ft_format_di(n, converter);
+	size = get_n_size(s2, converter.precision);
 	s = malloc(size + 1);
 	if (!s)
 		return (0);
@@ -48,7 +48,7 @@ char		*ft_format_f(double n, int data[3], char *flags)
 	s2 = ft_itoa(n);
 	return (s2);
 	ft_strlcpy(ft_strchr(s, '.') + 1, s2, 10);
-	if (ft_strchr(flags, '#'))
+	if (ft_strchr(converter.flags, '#'))
 	{
 		return (s);
 	}

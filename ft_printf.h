@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 11:01:05 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/01 09:45:23 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/03 22:23:18 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,26 @@
 # define FT_PRINTF_H
 # include "libft.h"
 # include <stdarg.h>
+# include <stdio.h>
 
-char	*ft_format_uxp(unsigned long n, char c, int *data, char *flags);
+typedef struct s_converter
+{
+	int		width;
+	int		precision;
+	char	flags[6];
+	char	convertion;
+}				t_converter;
+
+typedef struct s_tuple
+{
+	char	*str;
+	char	*(*func)(va_list, t_converter);
+}				t_tuple;
+
 int		ft_printf(const char *fmt, ...);
-char	*ft_format_s(char *s, int size);
-char	*ft_format_c(char c);
-char	*ft_format_di(int n, int *data, char *flags);
-char	*ft_format_f(double n, int data[3], char *flags);
+char	*ft_format_uxp(va_list ap, t_converter converter);
+char	*ft_format_s(va_list ap, t_converter converter);
+char	*ft_format_c(va_list ap, t_converter converter);
+char	*ft_format_di(va_list ap, t_converter converter);
+char	*ft_format_f(double n, t_converter converter);
 #endif

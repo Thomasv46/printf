@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putnbr_signed.c                                 :+:      :+:    :+:   */
+/*   ft_format_di.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/03/25 12:57:59 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/03 18:07:01 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	get_size(int n, int data[3], char *flags)
+static int	get_size(int n, int precision, char *flags)
 {
 	int	i;
 
-	if (!n && !data[1])
+	if (!n && !precision)
 		return (0);
 	i = 1;
 	while (n / 10)
@@ -24,21 +24,23 @@ static int	get_size(int n, int data[3], char *flags)
 		n /= 10;
 		i++;
 	}
-	if (data[1] > i)
-		i = data[1];
+	if (precision > i)
+		i = precision;
 	if (n < 0 || ft_strchr(flags, ' ') || ft_strchr(flags, '+'))
 		i++;
 	return (i);
 }
 
-char		*ft_format_di(int n, int *data, char *flags)
+char	*ft_format_di(va_list ap, t_converter converter)
 {
 	char	*s;
 	size_t	size;
+	int		n;
 	int		n2;
 
+	n = va_arg(ap, int);
 	n2 = n;
-	size = get_size(n, data, flags);
+	size = get_size(n, converter.precision, converter.flags);
 	s = malloc(size + 1);
 	if (!s)
 		return (0);
@@ -53,9 +55,9 @@ char		*ft_format_di(int n, int *data, char *flags)
 	}
 	if (n2 < 0)
 		*s = '-';
-	else if (ft_strchr(flags, '+'))
+	else if (ft_strchr(converter.flags, '+'))
 		*s = '+';
-	else if (ft_strchr(flags, ' '))
+	else if (ft_strchr(converter.flags, ' '))
 		*s = ' ';
 	return (s);
 }
