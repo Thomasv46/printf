@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/03 18:07:01 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/04 15:06:22 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,19 @@ static int	get_size(int n, int precision, char *flags)
 	return (i);
 }
 
-char	*ft_format_di(va_list ap, t_converter converter)
+char	*ft_format_di(va_list ap, t_converter c)
 {
 	char	*s;
 	size_t	size;
 	int		n;
 	int		n2;
 
-	n = va_arg(ap, int);
+	if (c.convertion == 'f')
+		n = (int)va_arg(ap, double);
+	else
+		n = va_arg(ap, int);
 	n2 = n;
-	size = get_size(n, converter.precision, converter.flags);
+	size = get_size(n, c.precision, c.flags);
 	s = malloc(size + 1);
 	if (!s)
 		return (0);
@@ -55,9 +58,9 @@ char	*ft_format_di(va_list ap, t_converter converter)
 	}
 	if (n2 < 0)
 		*s = '-';
-	else if (ft_strchr(converter.flags, '+'))
+	else if (ft_strchr(c.flags, '+'))
 		*s = '+';
-	else if (ft_strchr(converter.flags, ' '))
+	else if (ft_strchr(c.flags, ' '))
 		*s = ' ';
 	return (s);
 }

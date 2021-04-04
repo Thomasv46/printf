@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/03 15:57:54 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/04 16:56:15 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,47 @@ static int	get_n_size(char *s, int precision)
 	return (size);
 }
 
-char	*ft_format_f(double n, t_converter converter)
+static char	*get_int_part(va_list ap, t_converter converter, int *int_size, int *size)
 {
-	int		size;
-	int		size2;
+	va_list	ap2;
+	char	*s_int;
 	char	*s;
-	char	*s2;
 
-	s2 = ft_format_di(n, converter);
-	size = get_n_size(s2, converter.precision);
-	s = malloc(size + 1);
+	va_copy(ap2, ap);
+	s_int = ft_format_di(ap2, converter);
+	va_end(ap2);
+	if (!s_int)
+		return (0);
+	*size = get_n_size(s_int, converter.precision);
+	s = malloc(*size + 1);
 	if (!s)
 		return (0);
-	*(s + size--) = 0;
-	size2 = ft_strlcpy(s, s2, size);
-	free(s2);
-	*(s + size2++) = '.';
+	*int_size = ft_strlcpy(s, s_int, *size + 1);
+	free(s_int);
+	return (s);
+}
+
+char	*ft_format_f(va_list ap, t_converter converter)
+{
+	int		size;
+	int		int_size;
+	char	*s;
+	double	n;
+
+	s = get_int_part(ap, converter, &int_size, &size);
+	if (!s)
+		return (0);
+	n = va_arg(ap, double);
 	n = n - (int)n;
-	while (size2 < size--)
+	if (converter.precision)
+		*(s + int_size++) = '.';
+	while (int_size < size)
+	{
 		n *= 10;
-	if ((int)n % 5)
+		*(s + int_size++) = (int)n % 10 + '0';
+	}
+	if ((int)n / 5)
 		n = (n + 10) / 10;
-	s2 = ft_itoa(n);
-	return (s2);
-	ft_strlcpy(ft_strchr(s, '.') + 1, s2, 10);
 	if (ft_strchr(converter.flags, '#'))
 	{
 		return (s);
