@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/04 16:56:15 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/04 17:02:38 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,14 @@ char	*ft_format_f(va_list ap, t_converter converter)
 		return (0);
 	n = va_arg(ap, double);
 	n = n - (int)n;
-	if (converter.precision)
+	if (converter.precision || ft_strchr(converter.flags, '#'))
 		*(s + int_size++) = '.';
 	while (int_size < size)
 	{
 		n *= 10;
 		*(s + int_size++) = (int)n % 10 + '0';
 	}
-	if ((int)n / 5)
-		n = (n + 10) / 10;
-	if (ft_strchr(converter.flags, '#'))
-	{
-		return (s);
-	}
+	/* if ((int)n % 5 && (n * 10) / 5 )
+		//roundup */
 	return (s);
 }
