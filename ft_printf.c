@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/03 23:59:05 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/04 12:28:53 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,13 @@ static void	ft_pad(t_converter c, char *s, int *counter, int len)
 		if (ft_strchr(c.flags, '0') && (!ft_strchr("diuxX", c.convertion) || c.precision == -1))
 		{
 			pad = '0';
-			if (s && ft_strchr("-+ ", *s) && ft_strchr("diuxXefg", c.convertion))
+			if (s && ft_strchr("-+ ", *s) && !ft_strchr("cs", c.convertion))
 				ft_putchar_fd(*s++, 1);
-		}
-		if (s && pad == '0' && (c.convertion == 'p'
-				|| (ft_strchr(c.flags, '#') && ft_strchr("xXefg", c.convertion))))
-		{
-			ft_putchar_fd(*s++, 1);
-			ft_putchar_fd(*s++, 1);
+			if (s && (c.convertion == 'p' || (ft_strchr(c.flags, '#') && ft_strchr("xXefg", c.convertion))))
+			{
+				ft_putchar_fd(*s++, 1);
+				ft_putchar_fd(*s++, 1);
+			}
 		}
 		while (c.width-- > len)
 			output_char(pad, counter);

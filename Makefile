@@ -1,8 +1,12 @@
-SRCS		=	ft_printf.c ft_format_uxp.c ft_format_cs.c ft_format_di.c ft_format_f.c
+SRCS		=	ft_printf.c ft_format_uxp.c ft_format_cs.c ft_format_di.c
+
+BONUS		=	ft_format_f.c
 
 LIBFTSRCS	=
 
 OBJS		=	${SRCS:.c=.o}
+
+OBONUS		=	${BONUS:.c=.o}
 
 CC			=	gcc
 
@@ -19,11 +23,16 @@ NAME		=	libftprintf.a
 RM			=	rm -f
 
 ${NAME}		:	${OBJS}
-				$(MAKE) bonus -C libft
+				$(MAKE) all -C libft
 				ar rc ${NAME} ${OBJS} ./libft/*.o
 				ranlib ${NAME}
 
-all			:	${NAME}
+bonus		:	${NAME} ${OBONUS}
+				ar rc ${NAME} ${OBONUS}
+				ranlib ${NAME}
+
+
+all			:	${NAME} bonus
 
 clean		:
 				${RM} ${OBJS} ${OBONUS}
