@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/04 17:02:38 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/04 23:42:06 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,19 @@ static char	*get_int_part(va_list ap, t_converter converter, int *int_size, int 
 	va_end(ap2);
 	if (!s_int)
 		return (0);
+	va_copy(ap2, ap);
+	if (*s_int == '0' && va_arg(ap2, double) < 0)
+	{
+		free(s_int);
+		s = "-0";
+	}
+	va_end(ap2);
 	*size = get_n_size(s_int, converter.precision);
 	s = malloc(*size + 1);
 	if (!s)
 		return (0);
 	*int_size = ft_strlcpy(s, s_int, *size + 1);
-	free(s_int);
+	//free(s_int);
 	return (s);
 }
 
@@ -61,9 +68,16 @@ char	*ft_format_f(va_list ap, t_converter converter)
 	while (int_size < size)
 	{
 		n *= 10;
-		*(s + int_size++) = (int)n % 10 + '0';
+		if (n > 0)
+			*(s + int_size++) = (int)n % 10 + '0';
+		else
+			*(s + int_size++) = -(int)n % -10 + '0';
 	}
-	/* if ((int)n % 5 && (n * 10) / 5 )
-		//roundup */
+	if ((int)(n * 10) % 10 >= 5 || (n < 0 && -(int)(n * 10) % -10 >= 5))
+	{
+		while (*(s + int_size - 1) == '9')
+			*(s + int_size-- - 1) = '0';
+		*(s + int_size - 1) += 1;
+	}
 	return (s);
 }

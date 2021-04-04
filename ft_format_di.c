@@ -6,17 +6,17 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 21:09:55 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/04 15:06:22 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/04 21:35:46 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	get_size(int n, int precision, char *flags)
+static int	get_size(int n, t_converter c, char *flags)
 {
 	int	i;
 
-	if (!n && !precision)
+	if (!n && !c.precision && c.convertion != 'f')
 		return (0);
 	i = 1;
 	while (n / 10)
@@ -24,8 +24,8 @@ static int	get_size(int n, int precision, char *flags)
 		n /= 10;
 		i++;
 	}
-	if (precision > i)
-		i = precision;
+	if (c.precision > i && c.convertion != 'f')
+		i = c.precision;
 	if (n < 0 || ft_strchr(flags, ' ') || ft_strchr(flags, '+'))
 		i++;
 	return (i);
@@ -43,7 +43,7 @@ char	*ft_format_di(va_list ap, t_converter c)
 	else
 		n = va_arg(ap, int);
 	n2 = n;
-	size = get_size(n, c.precision, c.flags);
+	size = get_size(n, c, c.flags);
 	s = malloc(size + 1);
 	if (!s)
 		return (0);
