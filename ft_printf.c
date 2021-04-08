@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/04 15:21:55 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/08 16:56:44 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ static void	ft_pad(t_converter c, char *s, int *counter, int len)
 		while (c.width-- > len)
 			output_char(pad, counter);
 	}
-	*counter += len;
 	if (c.convertion == 'c' && s && !*s)
 		ft_putchar_fd(*s, 1);
 	else if (s)
@@ -90,19 +89,11 @@ static void	ft_pad(t_converter c, char *s, int *counter, int len)
 
 static char	*convert_to_str(va_list ap, t_converter c)
 {
-	t_tuple	funptr[5];
+	t_tuple	*funptr;
 	int		i;
 
-	funptr[0].str = "s";
-	funptr[0].func = &ft_format_s;
-	funptr[1].str = "di";
-	funptr[1].func = &ft_format_di;
-	funptr[2].str = "uxXp";
-	funptr[2].func = &ft_format_uxp;
-	funptr[3].str = "f";
-	funptr[3].func = &ft_format_f;
-	funptr[4].str = "c";
-	funptr[4].func = &ft_format_c;
+	funptr = (t_tuple[]){{"s", &ft_format_s}, {"di", &ft_format_di},
+	{"uxXp", &ft_format_uxp}, {"f", &ft_format_f}, {"c", &ft_format_c}};
 	i = 0;
 	while (!ft_strchr(funptr[i].str, c.convertion) && i < 4)
 		i++;
@@ -123,6 +114,7 @@ static void	display_value(va_list ap, const char **fmt, int *counter)
 	if (s && c.convertion != 'c')
 		len = ft_strlen(s);
 	ft_pad(c, s, counter, len);
+	*counter += len;
 	if (s)
 		free(s);
 }

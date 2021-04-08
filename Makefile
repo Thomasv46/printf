@@ -1,4 +1,4 @@
-SRCS		=	ft_printf.c ft_format_uxp.c ft_format_cs.c ft_format_di.c
+SRCS		=	ft_printf.c ft_format_uxp.c ft_format_cs.c ft_format_di.c ft_format_f.c
 
 BONUS		=	ft_format_f.c
 

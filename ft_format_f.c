@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/04 23:42:06 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/06 19:55:21 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*ft_format_f(va_list ap, t_converter converter)
 		*(s + int_size++) = '.';
 	while (int_size < size)
 	{
-		n *= 10;
+		n = (n - (int)n) * 10;
 		if (n > 0)
 			*(s + int_size++) = (int)n % 10 + '0';
 		else
