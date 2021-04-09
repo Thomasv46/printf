@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/09 16:42:25 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 17:51:06 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,12 @@ static void	display_value(va_list ap, const char **fmt, int *counter)
 	int			len;
 	t_converter	c;
 
-	c = create_converter(fmt, ap);
+	c = create_converter(fmt, ap, *counter);
 	if (ft_strchr("ge", c.convertion) || !c.convertion)
 		return ;
 	s = convert_arg_to_str(ap, c);
+	if (c.convertion == 'n')
+		return ;
 	len = 1;
 	if (s && c.convertion != 'c')
 		len = ft_strlen(s);

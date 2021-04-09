@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/09 17:44:10 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 17:51:36 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static char	get_pad(t_converter c)
 		return (' ');
 }
 
-t_converter	create_converter(const char **fmt, va_list ap)
+t_converter	create_converter(const char **fmt, va_list ap, int counter)
 {
 	t_converter	converter;
 	int			i;
@@ -59,5 +59,6 @@ t_converter	create_converter(const char **fmt, va_list ap)
 	}
 	converter.convertion = *(*fmt)++;
 	converter.pad = get_pad(converter);
+	converter.counter = counter;
 	return (converter);
 }
