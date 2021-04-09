@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 11:01:05 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/09 16:13:59 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 17:44:00 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_converter
 	char	flags[6];
 	char	convertion;
 	char	pad;
+	int		counter;
 }				t_converter;
 
 typedef struct s_tuple

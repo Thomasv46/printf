@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/09 14:48:06 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 17:11:42 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,13 @@ static char	*get_int_part(va_list ap, t_converter c, int *int_size, int *size)
 	*size = get_n_size(s_int, c.precision);
 	s = malloc(*size + 1);
 	if (!s)
+	{
+		free(s_int);
 		return (0);
+	}
 	*(s + *size) = 0;
 	*int_size = ft_strlcpy(s, s_int, *size + 1);
+	free(s_int);
 	return (s);
 }
 
@@ -49,7 +53,8 @@ static char	*handle_edge_cases(va_list ap, double n)
 		return (ft_strdup("inf"));
 	else if (n == -1.0 / 0.0)
 		return (ft_strdup("-inf"));
-	return (ft_strdup("nan"));
+	else
+		return (ft_strdup("nan"));
 }
 
 static char	*get_rounded_value(double n, int int_size, char *s)
