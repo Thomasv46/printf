@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/09 17:51:06 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 23:06:22 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	output_char(char c, int *count)
 	(*count)++;
 }
 
-static char	*convert_arg_to_str(va_list ap, t_converter c)
+static char	*convert_arg_to_str(va_list ap, t_converter *c)
 {
 	t_tuple		*funptr;
 	int			i;
@@ -27,7 +27,7 @@ static char	*convert_arg_to_str(va_list ap, t_converter c)
 	{"uxXp", &ft_format_uxp}, {"n", &ft_format_n}, {"f", &ft_format_f},
 	{"c", &ft_format_c}};
 	i = 0;
-	while (!ft_strchr(funptr[i].str, c.convertion) && i < 5)
+	while (!ft_strchr(funptr[i].str, c->convertion) && i < 5)
 		i++;
 	return (funptr[i].func(ap, c));
 }
@@ -66,7 +66,7 @@ static void	display_value(va_list ap, const char **fmt, int *counter)
 	c = create_converter(fmt, ap, *counter);
 	if (ft_strchr("ge", c.convertion) || !c.convertion)
 		return ;
-	s = convert_arg_to_str(ap, c);
+	s = convert_arg_to_str(ap, &c);
 	if (c.convertion == 'n')
 		return ;
 	len = 1;
@@ -95,3 +95,10 @@ int	ft_printf(const char *fmt, ...)
 	va_end(ap);
 	return (counter);
 }
+/*
+#include <limits.h>
+
+int	main(void)
+{
+	ft_printf(" %f %f ", LONG_MIN * 1.0, LONG_MAX * 1.0);
+} */

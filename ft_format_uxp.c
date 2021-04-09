@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/09 12:06:34 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 21:38:47 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,24 @@ static char	base_index(int i, const char *base)
 	return (*base);
 }
 
-static int	get_n_size(unsigned long n, t_converter c, int base_size)
+static int	get_n_size(unsigned long n, t_converter *c, int base_size)
 {
 	int				size;
 	unsigned long	n2;
 
 	n2 = n;
 	size = 1;
-	if (!n && !c.precision)
+	if (!n && !c->precision)
 		size = 0;
 	while (n / base_size)
 	{
 		n /= base_size;
 		size++;
 	}
-	if (c.precision > size)
-		size = c.precision;
-	if ((ft_strchr(c.flags, '#') && c.convertion != 'u' && n2)
-		|| c.convertion == 'p')
+	if (c->precision > size)
+		size = c->precision;
+	if ((ft_strchr(c->flags, '#') && c->convertion != 'u' && n2)
+		|| c->convertion == 'p')
 		size += 2;
 	return (size);
 }
@@ -59,31 +59,40 @@ static char	*set_data(va_list ap, char c, int *base_size, unsigned long *n)
 	return (s);
 }
 
-char	*ft_format_uxp(va_list ap, t_converter c)
+static char	*fill_str(unsigned long n, t_converter *c, int size[2], char *base)
+{
+	char	*s;
+
+	size[0] = get_n_size(n, c, size[1]);
+	s = malloc(size[0] + 1);
+	if (!s)
+		return (0);
+	*(s + size[0]) = 0;
+	while (size[0]--)
+	{
+		*(s + size[0]) = base_index(n % size[1], base);
+		n /= size[1];
+	}
+	return (s);
+}
+
+char	*ft_format_uxp(va_list ap, t_converter *c)
 {
 	int				size[2];
 	char			*s;
 	char			*base;
 	unsigned long	n;
 
-	base = set_data(ap, c.convertion, &size[1], &n);
-	size[0] = get_n_size(n, c, size[1]);
-	s = malloc(size[0] + 1);
+	base = set_data(ap, c->convertion, &size[1], &n);
+	s = fill_str(n, c, size, base);
 	if (!s)
 		return (0);
-	*(s + size[0]--) = 0;
-	while (n)
+	if ((ft_strchr(c->flags, '#') && c->convertion != 'u' && n)
+		|| c->convertion == 'p')
 	{
-		*(s + size[0]--) = base_index(n % size[1], base);
-		n /= size[1];
-	}
-	ft_memset(s, '0', size[0] + 1);
-	if ((ft_strchr(c.flags, '#') && c.convertion != 'u' && size[0])
-		|| c.convertion == 'p')
-	{
-		if (c.convertion == 'p')
-			c.convertion = 'x';
-		*(s + 1) = c.convertion;
+		if (c->convertion == 'p')
+			c->convertion = 'x';
+		*(s + 1) = c->convertion;
 	}
 	return (s);
 }
