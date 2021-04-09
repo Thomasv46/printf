@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/06 19:55:21 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 14:48:06 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,44 @@ static int	get_n_size(char *s, int precision)
 	return (size);
 }
 
-static char	*get_int_part(va_list ap, t_converter converter, int *int_size, int *size)
+static char	*get_int_part(va_list ap, t_converter c, int *int_size, int *size)
 {
-	va_list	ap2;
 	char	*s_int;
 	char	*s;
 
-	va_copy(ap2, ap);
-	s_int = ft_format_di(ap2, converter);
-	va_end(ap2);
+	s_int = ft_format_di(ap, c);
+	va_end(ap);
 	if (!s_int)
 		return (0);
-	va_copy(ap2, ap);
-	if (*s_int == '0' && va_arg(ap2, double) < 0)
-	{
-		free(s_int);
-		s = "-0";
-	}
-	va_end(ap2);
-	*size = get_n_size(s_int, converter.precision);
+	*size = get_n_size(s_int, c.precision);
 	s = malloc(*size + 1);
 	if (!s)
 		return (0);
+	*(s + *size) = 0;
 	*int_size = ft_strlcpy(s, s_int, *size + 1);
-	//free(s_int);
+	return (s);
+}
+
+static char	*handle_edge_cases(va_list ap, double n)
+{
+	va_end(ap);
+	if (n == 1.0 / 0.0)
+		return (ft_strdup("inf"));
+	else if (n == -1.0 / 0.0)
+		return (ft_strdup("-inf"));
+	return (ft_strdup("nan"));
+}
+
+static char	*get_rounded_value(double n, int int_size, char *s)
+{
+	if ((n * 10) == 5)
+		*(s + int_size - 1) += (*(s + int_size - 1) - '0') % 2;
+	else if ((n * 10) > 5)
+	{
+		while (*(s + int_size - 1) == '9')
+			*(s + int_size-- - 1) = '0';
+		*(s + int_size - 1) += 1;
+	}
 	return (s);
 }
 
@@ -57,27 +71,24 @@ char	*ft_format_f(va_list ap, t_converter converter)
 	int		int_size;
 	char	*s;
 	double	n;
+	va_list	ap2;
 
-	s = get_int_part(ap, converter, &int_size, &size);
+	va_copy(ap2, ap);
+	n = va_arg(ap, double);
+	if (n != n || n == 1.0 / 0.0 || n == -1.0 / 0.0)
+		return (handle_edge_cases(ap2, n));
+	s = get_int_part(ap2, converter, &int_size, &size);
 	if (!s)
 		return (0);
-	n = va_arg(ap, double);
 	n = n - (int)n;
+	if (n < 0)
+		n *= -1;
 	if (converter.precision || ft_strchr(converter.flags, '#'))
 		*(s + int_size++) = '.';
 	while (int_size < size)
 	{
 		n = (n - (int)n) * 10;
-		if (n > 0)
-			*(s + int_size++) = (int)n % 10 + '0';
-		else
-			*(s + int_size++) = -(int)n % -10 + '0';
+		*(s + int_size++) = (int)n % 10 + '0';
 	}
-	if ((int)(n * 10) % 10 >= 5 || (n < 0 && -(int)(n * 10) % -10 >= 5))
-	{
-		while (*(s + int_size - 1) == '9')
-			*(s + int_size-- - 1) = '0';
-		*(s + int_size - 1) += 1;
-	}
-	return (s);
+	return (get_rounded_value(n - (int)n, int_size, s));
 }
