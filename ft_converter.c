@@ -6,11 +6,20 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/09 17:51:36 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 23:26:06 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+static void	initialize_data(t_converter *converter, int counter)
+{
+	ft_bzero(converter->flags, 6);
+	ft_bzero(converter->lenght_modifier, 3);
+	converter->precision = -1;
+	converter->width = 0;
+	converter->counter = counter;
+}
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
@@ -38,9 +47,7 @@ t_converter	create_converter(const char **fmt, va_list ap, int counter)
 	t_converter	converter;
 	int			i;
 
-	ft_bzero(converter.flags, 6);
-	converter.precision = -1;
-	converter.width = 0;
+	initialize_data(&converter, counter);
 	i = 0;
 	while (ft_strchr("-0# +", **fmt))
 		if (!ft_strchr(converter.flags, *(*fmt)++))
@@ -59,6 +66,5 @@ t_converter	create_converter(const char **fmt, va_list ap, int counter)
 	}
 	converter.convertion = *(*fmt)++;
 	converter.pad = get_pad(converter);
-	converter.counter = counter;
 	return (converter);
 }

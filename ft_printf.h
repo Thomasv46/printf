@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 11:01:05 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/09 23:13:50 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/09 23:18:04 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct s_converter
 	int		width;
 	int		precision;
 	char	flags[6];
+	char	lenght_modifier[3];
 	char	convertion;
 	char	pad;
 	int		counter;
