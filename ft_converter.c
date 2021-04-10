@@ -6,19 +6,19 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 11:56:53 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/10 16:33:42 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	initialize_data(t_converter *converter, int counter)
+static void	initialize_data(t_converter *c, int counter)
 {
-	ft_bzero(converter->flags, 6);
-	ft_bzero(converter->lenght_modifier, 3);
-	converter->precision = -1;
-	converter->width = 0;
-	converter->counter = counter;
+	ft_bzero(c->flags, 6);
+	ft_bzero(c->lenght_modifier, 3);
+	c->precision = -1;
+	c->width = 0;
+	c->counter = counter;
 }
 
 static void	set_data(const char **fmt, va_list ap, int *data)
@@ -44,29 +44,29 @@ static char	get_pad(t_converter c)
 
 t_converter	create_converter(const char **fmt, va_list ap, int counter)
 {
-	t_converter	converter;
+	t_converter	c;
 	int			i;
 
-	initialize_data(&converter, counter);
+	initialize_data(&c, counter);
 	i = 0;
 	while (ft_strchr("-0# +", **fmt))
-		if (!ft_strchr(converter.flags, *(*fmt)++))
-			converter.flags[i++] = *((*fmt) - 1);
-	set_data(fmt, ap, &converter.width);
-	if (converter.width < 0)
+		if (!ft_strchr(c.flags, *(*fmt)++))
+			c.flags[i++] = *((*fmt) - 1);
+	set_data(fmt, ap, &c.width);
+	if (c.width < 0)
 	{
-		if (!ft_strchr(converter.flags, '-'))
-			converter.flags[i] = '-';
-		converter.width = -converter.width;
+		if (!ft_strchr(c.flags, '-'))
+			c.flags[i] = '-';
+		c.width = -c.width;
 	}
 	if (**fmt == '.')
 	{
 		(*fmt)++;
-		set_data(fmt, ap, &converter.precision);
+		set_data(fmt, ap, &c.precision);
 	}
 	while (ft_strchr("hl", **fmt))
-		converter.lenght_modifier[i++] = *(*fmt)++;
-	converter.convertion = *(*fmt)++;
-	converter.pad = get_pad(converter);
-	return (converter);
+		c.lenght_modifier[i++] = *(*fmt)++;
+	c.convertion = *(*fmt)++;
+	c.pad = get_pad(c);
+	return (c);
 }

@@ -6,13 +6,13 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:31:51 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 13:54:39 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/10 16:32:31 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-char	*ft_format_n(va_list ap, t_converter *converter)
+char	*ft_format_n(va_list ap, t_converter *c)
 {
 	int		*my_n;
 	char	**tab;
@@ -21,17 +21,17 @@ char	*ft_format_n(va_list ap, t_converter *converter)
 	my_n = va_arg(ap, int *);
 	i = 0;
 	tab = (char *[]){"hh", "h", "l", "ll"};
-	while (i < 4 && ft_strncmp(converter->lenght_modifier, tab[i], 3))
+	while (i < 4 && ft_strncmp(c->lenght_modifier, tab[i], 3))
 		i++;
 	if (i == 0)
-		*(signed char *)my_n = converter->counter;
+		*(signed char *)my_n = c->counter;
 	else if (i == 1)
-		*(short int *)my_n = converter->counter;
+		*(short int *)my_n = c->counter;
 	else if (i == 2)
-		*(long int *)my_n = converter->counter;
+		*(long int *)my_n = c->counter;
 	else if (i == 3)
-		*(long long int *)my_n = converter->counter;
+		*(long long int *)my_n = c->counter;
 	else
-		*(int *)my_n = converter->counter;
+		*(int *)my_n = c->counter;
 	return (0);
 }
