@@ -1,7 +1,7 @@
 SRCS		=	ft_printf.c ft_format_uxp.c ft_format_s.c ft_format_di.c ft_format_f.c \
-				ft_format_c.c ft_format_n.c ft_format_e.c ft_converter.c
+				ft_format_c.c ft_format_n.c ft_format_e.c ft_format_g.c ft_converter.c
 
-BONUS		=	ft_format_f.c ft_format_e.c
+BONUS		=	ft_format_f.c ft_format_e.c ft_format_g.c
 
 LIBFTSRCS	=
 

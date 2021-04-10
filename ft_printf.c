@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/10 17:05:53 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/10 19:46:58 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ static char	*convert_arg_to_str(va_list ap, t_converter *c)
 
 	funptr = (t_tuple[]){{"s", &ft_format_s}, {"di", &ft_format_di},
 	{"uxXp", &ft_format_uxp}, {"n", &ft_format_n}, {"f", &ft_format_f},
-	{"e", &ft_format_e}, {"c", &ft_format_c}};
+	{"e", &ft_format_e}, {"g", &ft_format_g}, {"c", &ft_format_c}};
 	i = 0;
-	while (!ft_strchr(funptr[i].str, c->convertion) && i < 6)
+	while (!ft_strchr(funptr[i].str, c->convertion) && i < 7)
 		i++;
 	return (funptr[i].func(ap, c));
 }
@@ -64,8 +64,6 @@ static void	display_value(va_list ap, const char **fmt, int *counter)
 	t_converter	c;
 
 	c = create_converter(fmt, ap, *counter);
-	if (ft_strchr("g", c.convertion) || !c.convertion)
-		return ;
 	s = convert_arg_to_str(ap, &c);
 	if (c.convertion == 'n')
 		return ;
