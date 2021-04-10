@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 11:43:36 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/10 11:56:53 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ t_converter	create_converter(const char **fmt, va_list ap, int counter)
 		(*fmt)++;
 		set_data(fmt, ap, &converter.precision);
 	}
+	while (ft_strchr("hl", **fmt))
+		converter.lenght_modifier[i++] = *(*fmt)++;
 	converter.convertion = *(*fmt)++;
 	converter.pad = get_pad(converter);
 	return (converter);
