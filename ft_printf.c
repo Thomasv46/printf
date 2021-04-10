@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/09 23:06:22 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/10 11:39:22 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,3 @@ int	ft_printf(const char *fmt, ...)
 	va_end(ap);
 	return (counter);
 }
-/*
-#include <limits.h>
-
-int	main(void)
-{
-	ft_printf(" %f %f ", LONG_MIN * 1.0, LONG_MAX * 1.0);
-} */
