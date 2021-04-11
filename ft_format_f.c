@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/11 17:54:20 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/11 20:18:34 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,12 @@ static char	*handle_edge_cases(double n, t_converter *c)
 		return (ft_strdup("nan"));
 }
 
-static void trim_trailing_0(char *s, t_converter *c)
+static void	trim_trailing_0(char *s, t_converter *c)
 {
 	int		size;
 	char	*s2;
 	char	*point;
 	int		i;
-
 
 	point = ft_strchr(s, '.');
 	if (point)
@@ -75,14 +74,18 @@ static void trim_trailing_0(char *s, t_converter *c)
 		if (c->precision != -1)
 		{
 			i = 0;
-			s2 = point;
+			s2 = s;
+			if (!ft_isdigit(*s2))
+				s2++;
+			while (ft_isdigit(*s2++))
+				i++;
 			while (i < c->precision && ft_isdigit(*++s2))
 				if (*s2 != '0')
 					i++;
 			*s2 = 0;
 		}
 		size = ft_strlen(s) - 1 ;
-		while (s + size != point && *(s + size) == '0')
+		while (s + size > point && *(s + size) == '0')
 			*(s + size--) = 0;
 		if (s + size == point && !ft_strchr(c->flags, '#'))
 			*(s + size--) = 0;
