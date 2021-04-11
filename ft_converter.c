@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/11 21:46:51 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/11 21:57:40 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@ static void	initialize_data(t_converter *c, int counter)
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
-	int	tmp;
+	/* int	tmp; */
 
 	if (**fmt == '*')
 	{
-		tmp = va_arg(ap, int);
-		if (*data == -1 && tmp < 0)
+		*data = va_arg(ap, int);
+		/* if (*data == -1 && tmp < 0)
 			*data = 0;
 		else
-			*data = tmp;
+			*data = tmp; */
 	}
 	else if (*data && ft_atoi(*fmt) < 0)
 		*data = 0;
