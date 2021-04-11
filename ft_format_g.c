@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 18:20:39 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 22:49:39 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/11 18:06:02 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,58 @@ static char	*handle_edge_cases(double n, t_converter *c)
 		return (ft_strdup("nan"));
 }
 
-static char	*trim_trailing_0(char *s, t_converter *c)
+static void trim_trailing_0(char *s, t_converter *c)
 {
-	char	*s2;
 	int		size;
+	char	*s2;
+	char	*point;
+	int		i;
 
-	if (!ft_strchr(c->flags, '#'))
+	point = ft_strchr(s, '.');
+	if (point)
 	{
-		s2 = ft_strtrim(s, "0.");
-		free(s);
-		s = s2;
-	}
-	else
-	{
+		if (c->precision != -1)
+		{
+			i = 0;
+			s2 = point;
+			while (ft_isdigit(*++s2))
+			{
+				if (*s2 != '0' && ++i > c->precision)
+				{
+					*s2 = 0;
+					return ;
+				}
+			}
+		}
 		size = ft_strlen(s) - 1 ;
-		while (*(s + size) == '0')
-			size--;
-		if (*(s + size) == '.')
-			*(s + size + 1) = 0;
+		while (s + size != point && *(s + size) == '0')
+			*(s + size--) = 0;
+		if (s + size == point && !ft_strchr(c->flags, '#'))
+			*(s + size--) = 0;
 	}
-	return (s);
+}
+
+static void	get_number_and_exponent(double *n, int *exponent)
+{
+	*exponent = 0;
+	if (*n)
+	{
+		while (-1 < *n && *n < 1)
+		{
+			(*exponent)--;
+			*n *= 10;
+		}
+		while (*n / 10 < -1 || 1 < *n / 10)
+		{
+			(*exponent)++;
+			*n /= 10;
+		}
+	}
 }
 
 char	*ft_format_g(va_list ap, t_converter *c)
 {
-	int		exponant;
+	int		exponent;
 	double	n;
 	va_list	ap2;
 	char	*s;
@@ -56,33 +83,23 @@ char	*ft_format_g(va_list ap, t_converter *c)
 	n = va_arg(ap, double);
 	if (n != n || n == 1.0 / 0.0 || n == -1.0 / 0.0)
 		return (handle_edge_cases(n, c));
-	exponant = 0;
-	if (n)
-	{
-		while (-1 < n && n < 1)
-		{
-			exponant--;
-			n *= 10;
-		}
-		while (n / 10 < -1 || 1 < n / 10)
-		{
-			exponant++;
-			n /= 10;
-		}
-	}
-	if (exponant < -4 || exponant > c->precision)
+	get_number_and_exponent(&n, &exponent);
+	if (exponent < -4 || (c->precision > 0 && exponent >= c->precision))
 		s = ft_format_e(ap2, c);
 	else
 	{
-		c->convertion = 'f';
+		if (!n)
+			c->precision = 0;
 		s = ft_format_f(ap2, c);
+		if (n)
+			trim_trailing_0(s, c);
 	}
-	s = trim_trailing_0(s, c);
 	va_end(ap2);
 	return (s);
 }
-/* #include <stdio.h>
-int main()
+
+/* int main()
 {
-	ft_printf(" %#-03.1g ", 1.0);
-} */
+	ft_printf(" %-02.1g %-02.1g %-02.1g ", 0.0, -1.0, 42.0);
+}
+ */

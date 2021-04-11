@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 18:10:43 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/11 17:54:20 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,35 @@ static char	*handle_edge_cases(double n, t_converter *c)
 		return (ft_strdup("nan"));
 }
 
-static char	*get_rounded_value(double n, int int_size, char *s)
+static void trim_trailing_0(char *s, t_converter *c)
+{
+	int		size;
+	char	*s2;
+	char	*point;
+	int		i;
+
+
+	point = ft_strchr(s, '.');
+	if (point)
+	{
+		if (c->precision != -1)
+		{
+			i = 0;
+			s2 = point;
+			while (i < c->precision && ft_isdigit(*++s2))
+				if (*s2 != '0')
+					i++;
+			*s2 = 0;
+		}
+		size = ft_strlen(s) - 1 ;
+		while (s + size != point && *(s + size) == '0')
+			*(s + size--) = 0;
+		if (s + size == point && !ft_strchr(c->flags, '#'))
+			*(s + size--) = 0;
+	}
+}
+
+static char	*get_rounded_value(double n, int int_size, char *s, t_converter *c)
 {
 	if ((n * 10) == 5)
 		*(s + int_size - 1) += (*(s + int_size - 1) - '0') % 2;
@@ -71,6 +99,8 @@ static char	*get_rounded_value(double n, int int_size, char *s)
 			*(s + int_size-- - 1) = '0';
 		*(s + int_size - 1) += 1;
 	}
+	if (c->convertion == 'g')
+		trim_trailing_0(s, c);
 	return (s);
 }
 
@@ -98,5 +128,5 @@ char	*ft_format_f(va_list ap, t_converter *c)
 		n = (n - (long long)n) * 10;
 		*(s + size[1]++) = (long long)n % 10 + '0';
 	}
-	return (get_rounded_value(n - (long long)n, size[1], s));
+	return (get_rounded_value(n - (long long)n, size[1], s, c));
 }
