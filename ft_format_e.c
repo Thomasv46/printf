@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 13:56:22 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/11 17:47:31 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/11 21:35:59 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*fill_str2(t_converter c, ...)
 	return (s);
 }
 
-static char	*handle_edge_cases(double n, t_converter *c)
+static char	*handle_inf_nan(double n, t_converter *c)
 {
 	c->pad = ' ';
 	if (n == 1.0 / 0)
@@ -81,7 +81,7 @@ char	*ft_format_e(va_list ap, t_converter *c)
 
 	n = va_arg(ap, double);
 	if (n != n || n == 1.0 / 0.0 || n == -1.0 / 0.0)
-		return (handle_edge_cases(n, c));
+		return (handle_inf_nan(n, c));
 	get_number_and_exponent(&n, &exponent);
 	s = fill_str1(*c, n);
 	if (!s)

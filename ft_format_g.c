@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 18:20:39 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/11 20:16:11 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/11 21:53:28 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*ft_format_g(va_list ap, t_converter *c)
 		s = ft_format_e(ap2, c);
 	else if (exponent < 0)
 	{
-		c->precision = 4;
+		c->precision = 6;
 		s = ft_format_f(ap2, c);
 	}
 	else
@@ -72,6 +72,6 @@ char	*ft_format_g(va_list ap, t_converter *c)
 /*
 int main()
 {
-	ft_printf(" %7.2g ", -420.0);
+	printf("%0*g", -7, -54);
 }
  */
