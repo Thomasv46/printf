@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 18:20:39 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 18:07:24 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/12 18:09:32 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	get_int_length(double n)
 	return (i);
 }
 
-static char	*get_size(double n, va_list ap, t_converter *c, char convertion)
+static char	*format_str(double n, va_list ap, t_converter *c, char convertion)
 {
 	int		number_of_decimals;
 	int		int_length;
@@ -91,9 +91,9 @@ char	*ft_format_g(va_list ap, t_converter *c)
 		else if (c->precision == -1)
 			c->precision = 6;
 		if (exponent < -4 || exponent >= c->precision)
-			s = get_size(n, ap2, c, 'e');
+			s = format_str(n, ap2, c, 'e');
 		else
-			s = get_size(n, ap2, c, 'f');
+			s = format_str(n, ap2, c, 'f');
 	}
 	va_end(ap2);
 	return (s);

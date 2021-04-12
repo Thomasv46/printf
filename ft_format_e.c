@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 13:56:22 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/11 21:35:59 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/12 18:39:06 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ static char	*fill_str1(t_converter c, ...)
 	return (s);
 }
 
-static char	*fill_str2(t_converter c, ...)
+static char	*fill_str2(char *s_int, t_converter c, ...)
 {
 	char	*s;
+	char	*s_main;
 	va_list	ap_int;
+	int		size;
 
 	c.convertion = 'd';
 	ft_strlcpy(c.flags, "+0", 6);
@@ -38,18 +40,16 @@ static char	*fill_str2(t_converter c, ...)
 	va_end(ap_int);
 	if (!s)
 		return (0);
-	return (s);
-}
-
-static char	*handle_inf_nan(double n, t_converter *c)
-{
-	c->pad = ' ';
-	if (n == 1.0 / 0)
-		return (ft_strdup("inf"));
-	else if (n == -1.0 / 0)
-		return (ft_strdup("-inf"));
-	else
-		return (ft_strdup("nan"));
+	size = ft_strlen(s_int) + ft_strlen(s) + 1;
+	s_main = malloc(size + 1);
+	if (s_main)
+	{
+		ft_strlcpy(s_main, s_int, size - 3);
+		ft_strlcat(s_main, "e", size + 1);
+		ft_strlcat(s_main, s, size + 1);
+	}
+	free(s);
+	return (s_main);
 }
 
 static void	get_number_and_exponent(double *n, int *exponent)
@@ -72,35 +72,25 @@ static void	get_number_and_exponent(double *n, int *exponent)
 
 char	*ft_format_e(va_list ap, t_converter *c)
 {
-	int		size;
 	int		exponent;
-	char	*s;
+	va_list	ap2;
+	char	*s_int;
 	char	*s2;
-	char	*s_main;
 	double	n;
 
+	va_copy(ap2, ap);
 	n = va_arg(ap, double);
 	if (n != n || n == 1.0 / 0.0 || n == -1.0 / 0.0)
-		return (handle_inf_nan(n, c));
-	get_number_and_exponent(&n, &exponent);
-	s = fill_str1(*c, n);
-	if (!s)
-		return (0);
-	s2 = fill_str2(*c, exponent);
-	if (!s2)
+		s2 = ft_format_f(ap2, c);
+	else
 	{
-		free(s);
-		return (0);
+		get_number_and_exponent(&n, &exponent);
+		s_int = fill_str1(*c, n);
+		if (!s_int)
+			return (0);
+		s2 = fill_str2(s_int, *c, exponent);
+		free(s_int);
 	}
-	size = ft_strlen(s) + ft_strlen(s2) + 1;
-	s_main = malloc(size + 1);
-	if (s_main)
-	{
-		ft_strlcpy(s_main, s, size - 3);
-		ft_strlcat(s_main, "e", size + 1);
-		ft_strlcat(s_main, s2, size + 1);
-	}
-	free(s);
-	free(s2);
-	return (s_main);
+	va_end(ap2);
+	return (s2);
 }
