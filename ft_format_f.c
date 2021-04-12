@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/11 21:53:55 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/12 16:14:29 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,25 +64,11 @@ static char	*handle_inf_nan(double n, t_converter *c)
 static void	trim_trailing_0(char *s, t_converter *c)
 {
 	int		size;
-	char	*s2;
 	char	*point;
-	int		i;
 
 	point = ft_strchr(s, '.');
 	if (point)
 	{
-		if (c->precision != -1)
-		{
-			i = 0;
-			s2 = s;
-			if (!ft_isdigit(*s2))
-				s2++;
-			while (ft_isdigit(*s2++))
-				i++;
-			while (i < c->precision && ft_isdigit(*++s2))
-				i++;
-			*s2 = 0;
-		}
 		size = ft_strlen(s) - 1 ;
 		while (s + size > point && *(s + size) == '0')
 			*(s + size--) = 0;
@@ -104,7 +90,7 @@ static char	*get_rounded_value(double n, char *s, t_converter *c)
 			*(s + size-- - 1) = '0';
 		*(s + size - 1) += 1;
 	}
-	if (c->convertion == 'g')
+	if (c->convertion == 'g' && !ft_strchr(c->flags, '#'))
 		trim_trailing_0(s, c);
 	return (s);
 }
@@ -123,7 +109,7 @@ char	*ft_format_f(va_list ap, t_converter *c)
 		return (0);
 	if (n > 0 && (long long)n < 0)
 		n += (long long)n;
-	n = n - (long long)n;
+	n -= (long long)n;
 	if (n < 0)
 		n *= -1;
 	if (c->precision || ft_strchr(c->flags, '#'))
