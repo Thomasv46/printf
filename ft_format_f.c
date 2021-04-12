@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 16:14:29 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/12 21:50:57 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,27 +61,10 @@ static char	*handle_inf_nan(double n, t_converter *c)
 		return (ft_strdup("nan"));
 }
 
-static void	trim_trailing_0(char *s, t_converter *c)
+static char	*get_rounded_value(double n, char *s, t_converter *c, int size)
 {
-	int		size;
 	char	*point;
 
-	point = ft_strchr(s, '.');
-	if (point)
-	{
-		size = ft_strlen(s) - 1 ;
-		while (s + size > point && *(s + size) == '0')
-			*(s + size--) = 0;
-		if (s + size == point && !ft_strchr(c->flags, '#'))
-			*(s + size--) = 0;
-	}
-}
-
-static char	*get_rounded_value(double n, char *s, t_converter *c)
-{
-	int	size;
-
-	size = ft_strlen(s);
 	if ((n * 10) == 5)
 		*(s + size - 1) += (*(s + size - 1) - '0') % 2;
 	else if ((n * 10) > 5)
@@ -91,7 +74,17 @@ static char	*get_rounded_value(double n, char *s, t_converter *c)
 		*(s + size - 1) += 1;
 	}
 	if (c->convertion == 'g' && !ft_strchr(c->flags, '#'))
-		trim_trailing_0(s, c);
+	{
+		point = ft_strchr(s, '.');
+		if (point)
+		{
+			size = ft_strlen(s) - 1 ;
+			while (s + size > point && *(s + size) == '0')
+				*(s + size--) = 0;
+			if (s + size == point && !ft_strchr(c->flags, '#'))
+				*(s + size--) = 0;
+		}
+	}
 	return (s);
 }
 
@@ -119,5 +112,5 @@ char	*ft_format_f(va_list ap, t_converter *c)
 		n = (n - (long long)n) * 10;
 		*(s + size[1]++) = (long long)n % 10 + '0';
 	}
-	return (get_rounded_value(n - (long long)n, s, c));
+	return (get_rounded_value(n - (long long)n, s, c, size[0]));
 }

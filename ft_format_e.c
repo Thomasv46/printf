@@ -6,20 +6,20 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 13:56:22 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 18:39:06 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/12 19:54:49 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static char	*fill_str1(t_converter c, ...)
+static char	*get_value(t_converter c, ...)
 {
 	char	*s;
-	va_list	ap_exp;
+	va_list	ap_value;
 
-	va_start(ap_exp, c);
-	s = ft_format_f(ap_exp, &c);
-	va_end(ap_exp);
+	va_start(ap_value, c);
+	s = ft_format_f(ap_value, &c);
+	va_end(ap_value);
 	if (!s)
 		return (0);
 	return (s);
@@ -75,22 +75,22 @@ char	*ft_format_e(va_list ap, t_converter *c)
 	int		exponent;
 	va_list	ap2;
 	char	*s_int;
-	char	*s2;
+	char	*s;
 	double	n;
 
 	va_copy(ap2, ap);
 	n = va_arg(ap, double);
 	if (n != n || n == 1.0 / 0.0 || n == -1.0 / 0.0)
-		s2 = ft_format_f(ap2, c);
+		s = ft_format_f(ap2, c);
 	else
 	{
 		get_number_and_exponent(&n, &exponent);
-		s_int = fill_str1(*c, n);
+		s_int = get_value(*c, n);
 		if (!s_int)
 			return (0);
-		s2 = fill_str2(s_int, *c, exponent);
+		s = fill_str2(s_int, *c, exponent);
 		free(s_int);
 	}
 	va_end(ap2);
-	return (s2);
+	return (s);
 }
