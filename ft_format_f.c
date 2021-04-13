@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 21:50:57 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 09:43:52 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	get_n_size(char *s, t_converter *c)
 	int	size;
 
 	size = ft_strlen(s);
-	if (c->precision == -1)
+	if (c->precision < 0)
 		size += 7;
 	else if (c->precision)
 		size += c->precision + 1;
@@ -28,13 +28,13 @@ static int	get_n_size(char *s, t_converter *c)
 
 static char	*get_int_part(t_converter *c, int *size, ...)
 {
-	char	*s_int;
 	char	*s;
-	va_list	ap;
+	char	*s_int;
+	va_list	ap_int;
 
-	va_start(ap, size);
-	s_int = ft_format_di(ap, c);
-	va_end(ap);
+	va_start(ap_int, size);
+	s_int = ft_format_di(ap_int, c);
+	va_end(ap_int);
 	if (!s_int)
 		return (0);
 	*size = get_n_size(s_int, c);

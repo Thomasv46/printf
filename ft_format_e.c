@@ -6,20 +6,20 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 13:56:22 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 19:54:49 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 09:42:48 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static char	*get_value(t_converter c, ...)
+static char	*get_base(t_converter c, ...)
 {
 	char	*s;
-	va_list	ap_value;
+	va_list	ap_base;
 
-	va_start(ap_value, c);
-	s = ft_format_f(ap_value, &c);
-	va_end(ap_value);
+	va_start(ap_base, c);
+	s = ft_format_f(ap_base, &c);
+	va_end(ap_base);
 	if (!s)
 		return (0);
 	return (s);
@@ -27,29 +27,29 @@ static char	*get_value(t_converter c, ...)
 
 static char	*fill_str2(char *s_int, t_converter c, ...)
 {
+	char	*s_exp;
 	char	*s;
-	char	*s_main;
-	va_list	ap_int;
+	va_list	ap_exp;
 	int		size;
 
 	c.convertion = 'd';
-	ft_strlcpy(c.flags, "+0", 6);
+	ft_strlcpy(c.flags, "+", 6);
 	c.precision = 2;
-	va_start(ap_int, c);
-	s = ft_format_di(ap_int, &c);
-	va_end(ap_int);
-	if (!s)
+	va_start(ap_exp, c);
+	s_exp = ft_format_di(ap_exp, &c);
+	va_end(ap_exp);
+	if (!s_exp)
 		return (0);
-	size = ft_strlen(s_int) + ft_strlen(s) + 1;
-	s_main = malloc(size + 1);
-	if (s_main)
+	size = ft_strlen(s_int) + ft_strlen(s_exp) + 2;
+	s = malloc(size);
+	if (s)
 	{
-		ft_strlcpy(s_main, s_int, size - 3);
-		ft_strlcat(s_main, "e", size + 1);
-		ft_strlcat(s_main, s, size + 1);
+		ft_strlcpy(s, s_int, size);
+		ft_strlcat(s, "e", size);
+		ft_strlcat(s, s_exp, size);
 	}
-	free(s);
-	return (s_main);
+	free(s_exp);
+	return (s);
 }
 
 static void	get_number_and_exponent(double *n, int *exponent)
@@ -72,10 +72,10 @@ static void	get_number_and_exponent(double *n, int *exponent)
 
 char	*ft_format_e(va_list ap, t_converter *c)
 {
-	int		exponent;
 	va_list	ap2;
-	char	*s_int;
 	char	*s;
+	char	*s_base;
+	int		exponent;
 	double	n;
 
 	va_copy(ap2, ap);
@@ -85,11 +85,11 @@ char	*ft_format_e(va_list ap, t_converter *c)
 	else
 	{
 		get_number_and_exponent(&n, &exponent);
-		s_int = get_value(*c, n);
-		if (!s_int)
+		s_base = get_base(*c, n);
+		if (!s_base)
 			return (0);
-		s = fill_str2(s_int, *c, exponent);
-		free(s_int);
+		s = fill_str2(s_base, *c, exponent);
+		free(s_base);
 	}
 	va_end(ap2);
 	return (s);

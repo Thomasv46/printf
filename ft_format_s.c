@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 15:24:21 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 11:19:08 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 09:48:25 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 char	*ft_format_s(va_list ap, t_converter *c)
 {
 	char	*s;
-	int		size;
 	char	*input;
+	int		size;
 
 	input = va_arg(ap, char *);
 	if (!input)

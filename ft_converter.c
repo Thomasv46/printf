@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 22:16:00 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 09:52:10 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,8 @@ static void	initialize_data(t_converter *c, int counter)
 
 static void	set_data(const char **fmt, va_list ap, int *data)
 {
-	int	tmp;
 	if (**fmt == '*')
-	{
-		tmp = va_arg(ap, int);
-		if (tmp < 0 && *data == -1)
-			*data = -1;
-		else
-			*data = tmp;
-	}
-
+		*data = va_arg(ap, int);
 	else if (*data && ft_atoi(*fmt) < 0)
 		*data = 0;
 	else
@@ -44,7 +36,7 @@ static void	set_data(const char **fmt, va_list ap, int *data)
 static char	get_pad(t_converter c)
 {
 	if (!ft_strchr(c.flags, '-') && ft_strchr(c.flags, '0')
-		&& (!ft_strchr("diuxX", c.convertion) || c.precision == -1))
+		&& (!ft_strchr("diuxX", c.convertion) || c.precision < 0))
 		return ('0');
 	else
 		return (' ');

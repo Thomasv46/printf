@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 18:20:39 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/12 18:09:32 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 10:07:30 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ char	*ft_format_g(va_list ap, t_converter *c)
 	else
 	{
 		get_number_and_exponent(n, &exponent);
-		if (c->precision == 0)
+		if (!c->precision)
 			c->precision = 1;
-		else if (c->precision == -1)
+		else if (c->precision < 0)
 			c->precision = 6;
 		if (exponent < -4 || exponent >= c->precision)
 			s = format_str(n, ap2, c, 'e');
