@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/10 19:46:58 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 14:00:38 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,9 @@ static void	display_value(va_list ap, const char **fmt, int *counter)
 	t_converter	c;
 
 	c = create_converter(fmt, ap, *counter);
-	s = convert_arg_to_str(ap, &c);
-	if (c.convertion == 'n')
+	if (c.convertion)
+		s = convert_arg_to_str(ap, &c);
+	if (c.convertion == 'n' || !c.convertion)
 		return ;
 	len = 1;
 	if (s && c.convertion != 'c')

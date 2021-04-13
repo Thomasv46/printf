@@ -6,19 +6,21 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 15:21:42 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/13 09:52:10 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 14:11:41 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	initialize_data(t_converter *c, int counter)
+static void	initialize_data(t_converter *c, int counter, int *index)
 {
 	ft_bzero(c->flags, 6);
 	ft_bzero(c->lenght_modifier, 3);
+	c->convertion = 0;
 	c->precision = -1;
 	c->width = 0;
 	c->counter = counter;
+	*index = 0;
 }
 
 static void	set_data(const char **fmt, va_list ap, int *data)
@@ -47,9 +49,8 @@ t_converter	create_converter(const char **fmt, va_list ap, int counter)
 	t_converter	c;
 	int			i;
 
-	initialize_data(&c, counter);
-	i = 0;
-	while (ft_strchr("-0# +", **fmt))
+	initialize_data(&c, counter, &i);
+	while (**fmt && ft_strchr("-0# +", **fmt))
 		if (!ft_strchr(c.flags, *(*fmt)++))
 			c.flags[i++] = *((*fmt) - 1);
 	set_data(fmt, ap, &c.width);
@@ -64,9 +65,10 @@ t_converter	create_converter(const char **fmt, va_list ap, int counter)
 		(*fmt)++;
 		set_data(fmt, ap, &c.precision);
 	}
-	while (ft_strchr("hl", **fmt))
+	while (**fmt && ft_strchr("hl", **fmt))
 		c.lenght_modifier[i++] = *(*fmt)++;
-	c.convertion = *(*fmt)++;
+	if (**fmt)
+		c.convertion = *(*fmt)++;
 	c.pad = get_pad(c);
 	return (c);
 }
