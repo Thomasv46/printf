@@ -6,28 +6,31 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 18:20:39 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/13 10:07:30 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/13 10:57:56 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	get_number_and_exponent(double n, int *exponent)
+static int	get_exponent(double n)
 {
-	*exponent = 0;
+	int	exponent;
+
+	exponent = 0;
 	if (n)
 	{
 		while (-1 < n && n < 1)
 		{
-			(*exponent)--;
+			(exponent)--;
 			n *= 10;
 		}
 		while (n / 10 < -1 || 1 < n / 10)
 		{
-			(*exponent)++;
+			(exponent)++;
 			n /= 10;
 		}
 	}
+	return (exponent);
 }
 
 static int	get_int_length(double n)
@@ -85,7 +88,7 @@ char	*ft_format_g(va_list ap, t_converter *c)
 		s = ft_format_f(ap2, c);
 	else
 	{
-		get_number_and_exponent(n, &exponent);
+		exponent = get_exponent(n);
 		if (!c->precision)
 			c->precision = 1;
 		else if (c->precision < 0)
