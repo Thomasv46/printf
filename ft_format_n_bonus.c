@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_format_n.c                                      :+:      :+:    :+:   */
+/*   ft_format_n_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/09 16:31:51 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/10 16:32:31 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/14 13:34:48 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ char	*ft_format_n(va_list ap, t_converter *c)
 	int		i;
 
 	my_n = va_arg(ap, int *);
+	if (!my_n)
+		return (0);
 	i = 0;
 	tab = (char *[]){"hh", "h", "l", "ll"};
 	while (i < 4 && ft_strncmp(c->lenght_modifier, tab[i], 3))
