@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_format_f.c                                      :+:      :+:    :+:   */
+/*   ft_format_f_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/24 08:44:19 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/13 09:43:52 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/20 19:21:15 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,17 +100,17 @@ char	*ft_format_f(va_list ap, t_converter *c)
 	s = get_int_part(c, size, n);
 	if (!s)
 		return (0);
-	if (n > 0 && (long long)n < 0)
-		n += (long long)n;
-	n -= (long long)n;
+	if (n > 0 && (long)n < 0)
+		n += (long)n;
+	n -= (long)n;
 	if (n < 0)
 		n *= -1;
 	if (c->precision || ft_strchr(c->flags, '#'))
 		*(s + size[1]++) = '.';
 	while (size[1] < size[0])
 	{
-		n = (n - (long long)n) * 10;
-		*(s + size[1]++) = (long long)n % 10 + '0';
+		n = (n - (long)n) * 10;
+		*(s + size[1]++) = (long)n % 10 + '0';
 	}
-	return (get_rounded_value(n - (long long)n, s, c, size[0]));
+	return (get_rounded_value(n - (long)n, s, c, size[0]));
 }

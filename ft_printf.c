@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 10:25:42 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/13 14:00:38 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/21 11:25:03 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char	*convert_arg_to_str(va_list ap, t_converter *c)
 	return (funptr[i].func(ap, c));
 }
 
-static void	ft_pad(t_converter c, char *s, int *counter, int len)
+static void	display_formated_arg(t_converter c, char *s, int *counter, int len)
 {
 	if (!ft_strchr(c.flags, '-'))
 	{
@@ -57,7 +57,7 @@ static void	ft_pad(t_converter c, char *s, int *counter, int len)
 		output_char(c.pad, counter);
 }
 
-static void	display_value(va_list ap, const char **fmt, int *counter)
+static void	process_argument(va_list ap, const char **fmt, int *counter)
 {
 	char		*s;
 	int			len;
@@ -71,7 +71,7 @@ static void	display_value(va_list ap, const char **fmt, int *counter)
 	len = 1;
 	if (s && c.convertion != 'c')
 		len = ft_strlen(s);
-	ft_pad(c, s, counter, len);
+	display_formated_arg(c, s, counter, len);
 	*counter += len;
 	if (s)
 		free(s);
@@ -89,7 +89,7 @@ int	ft_printf(const char *fmt, ...)
 		if (*fmt++ != '%')
 			output_char(*(fmt - 1), &counter);
 		else if (*fmt)
-			display_value(ap, &fmt, &counter);
+			process_argument(ap, &fmt, &counter);
 	}
 	va_end(ap);
 	return (counter);

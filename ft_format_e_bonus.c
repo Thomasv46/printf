@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_format_e.c                                      :+:      :+:    :+:   */
+/*   ft_format_e_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 13:56:22 by tvanelst          #+#    #+#             */
-/*   Updated: 2021/04/13 09:42:48 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/21 10:16:30 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static char	*get_base(t_converter c, ...)
 	return (s);
 }
 
-static char	*fill_str2(char *s_int, t_converter c, ...)
+static char	*add_exponent(char *s_base, t_converter c, ...)
 {
 	char	*s_exp;
 	char	*s;
@@ -40,11 +40,11 @@ static char	*fill_str2(char *s_int, t_converter c, ...)
 	va_end(ap_exp);
 	if (!s_exp)
 		return (0);
-	size = ft_strlen(s_int) + ft_strlen(s_exp) + 2;
+	size = ft_strlen(s_base) + ft_strlen(s_exp) + 2;
 	s = malloc(size);
 	if (s)
 	{
-		ft_strlcpy(s, s_int, size);
+		ft_strlcpy(s, s_base, size);
 		ft_strlcat(s, "e", size);
 		ft_strlcat(s, s_exp, size);
 	}
@@ -52,7 +52,7 @@ static char	*fill_str2(char *s_int, t_converter c, ...)
 	return (s);
 }
 
-static void	get_number_and_exponent(double *n, int *exponent)
+static void	get_base_and_exponent(double *n, int *exponent)
 {
 	*exponent = 0;
 	if (*n)
@@ -84,11 +84,11 @@ char	*ft_format_e(va_list ap, t_converter *c)
 		s = ft_format_f(ap2, c);
 	else
 	{
-		get_number_and_exponent(&n, &exponent);
+		get_base_and_exponent(&n, &exponent);
 		s_base = get_base(*c, n);
 		if (!s_base)
 			return (0);
-		s = fill_str2(s_base, *c, exponent);
+		s = add_exponent(s_base, *c, exponent);
 		free(s_base);
 	}
 	va_end(ap2);

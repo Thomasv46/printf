@@ -6,7 +6,7 @@
 /*   By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 13:23:34 by thomasvanel       #+#    #+#             */
-/*   Updated: 2021/04/10 11:37:09 by tvanelst         ###   ########.fr       */
+/*   Updated: 2021/04/21 11:28:36 by tvanelst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	base_index(int i, const char *base)
 	return (*base);
 }
 
-static int	get_n_size(unsigned long n, t_converter *c, int base_size)
+static int	get_size(unsigned long n, t_converter *c, int base_size)
 {
 	int				size;
 	unsigned long	n2;
@@ -43,27 +43,27 @@ static int	get_n_size(unsigned long n, t_converter *c, int base_size)
 
 static char	*set_data(va_list ap, char c, int *base_size, unsigned long *n)
 {
-	char	*s;
+	char	*base;
 
 	if (c == 'p')
 		*n = va_arg(ap, unsigned long);
 	else
 		*n = va_arg(ap, unsigned int);
 	if (c == 'u')
-		s = "0123456789";
+		base = "0123456789";
 	else if (c == 'X')
-		s = "0123456789ABCDEF";
+		base = "0123456789ABCDEF";
 	else
-		s = "0123456789abcdef";
-	*base_size = ft_strlen(s);
-	return (s);
+		base = "0123456789abcdef";
+	*base_size = ft_strlen(base);
+	return (base);
 }
 
 static char	*fill_str(unsigned long n, t_converter *c, int size[2], char *base)
 {
 	char	*s;
 
-	size[0] = get_n_size(n, c, size[1]);
+	size[0] = get_size(n, c, size[1]);
 	s = malloc(size[0] + 1);
 	if (!s)
 		return (0);
