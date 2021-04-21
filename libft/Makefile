@@ -6,7 +6,7 @@
 #    By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 17:48:42 by tvanelst          #+#    #+#              #
-#    Updated: 2021/04/05 17:48:43 by tvanelst         ###   ########.fr        #
+#    Updated: 2021/04/21 13:18:53 by tvanelst         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,12 +34,10 @@ NAME	=	libft.a
 RM		=	rm -f
 
 $(NAME)	:	${OBJS}
-			ar rc ${NAME} ${OBJS}
-			ranlib ${NAME}
+			ar rcs ${NAME} ${OBJS}
 
 bonus	:	${NAME} ${OBONUS}
-			ar rc ${NAME} ${OBONUS}
-			ranlib ${NAME}
+			ar rcs ${NAME} ${OBONUS}
 
 all		:	${NAME} bonus
 
