@@ -6,7 +6,7 @@
 #    By: tvanelst <tvanelst@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/21 13:23:10 by tvanelst          #+#    #+#              #
-#    Updated: 2021/04/21 13:28:02 by tvanelst         ###   ########.fr        #
+#    Updated: 2021/04/26 13:13:27 by tvanelst         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,12 +14,7 @@ SRCS		=	ft_printf.c ft_format_uxp.c ft_format_s.c ft_format_di.c	\
 				ft_format_f_bonus.c ft_format_c.c ft_format_n_bonus.c		\
 				ft_format_e_bonus.c ft_format_g_bonus.c ft_converter.c
 
-BONUS		=	ft_format_f_bonus.c ft_format_e_bonus.c ft_format_g_bonus.c \
-				ft_format_n_bonus.c
-
 OBJS		=	${SRCS:.c=.o}
-
-OBONUS		=	${BONUS:.c=.o}
 
 CC			=	gcc
 
@@ -39,8 +34,7 @@ ${NAME}		:	${OBJS}
 				$(MAKE) all -C libft
 				ar rcs ${NAME} ${OBJS} ./libft/*.o
 
-bonus		:	${NAME} ${OBONUS}
-				ar rcs ${NAME} ${OBONUS}
+bonus		:	${NAME}
 
 all			:	bonus
 
